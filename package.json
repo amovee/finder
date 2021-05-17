@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "gh-pages-deploy": "node scripts/gh-pages-deploy.ts"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -32,6 +33,7 @@
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "execa": "^5.0.0"
   }
 }
