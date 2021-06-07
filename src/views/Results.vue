@@ -15,6 +15,10 @@
       <h1>{{ activeCategory.name }}</h1>
       <div class="description" v-html="activeCategory.description"></div>
       <div class="results" v-if="!isLoading">
+        <div class="infobox" v-if="results[activeCategory.name].length == 0">
+          <h2>Information</h2>
+          In dieser Kategorie gibt es derzeit noch keine Programme für Dich.
+        </div>
         <ResultBox
           v-for="(result, index) in results[activeCategory.name]"
           :key="index"
@@ -22,6 +26,7 @@
           @open="openResult"
         />
       </div>
+      <button @click="legalMode = true">Haftungsausschluss</button>
     </div>
     <div v-if="activeResult" class="active-result">
       <button @click="activeResult = null" class="close">
@@ -29,12 +34,19 @@
       </button>
       <Result :result="activeResult" :actions="currentActions"></Result>
     </div>
+    <div v-if="legalMode" class="legal-window">
+      <button @click="legalMode = false" class="close">
+        <img src="../assets/close_black.svg" alt="" />
+      </button>
+      <Legal></Legal>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 import Result from "../components/Result.vue";
+import Legal from "../components/Legal.vue";
 import ResultBox from "../components/ResultBox.vue";
 import axios from "axios";
 import { states } from "../shared/helpers";
@@ -42,6 +54,7 @@ import { states } from "../shared/helpers";
 @Component({
   components: {
     Result,
+    Legal,
     ResultBox,
   },
 })
@@ -55,6 +68,7 @@ export default class Results extends Vue {
   public activeResult: any = null;
   mariageTypeOptions: any[] = [];
   public loadingResults = true;
+  legalMode = false;
   constructor() {
     super();
   }
@@ -153,11 +167,15 @@ export default class Results extends Vue {
           res.min_children_count == null ||
           filterCriteria.numberOfChildren >= res.min_children_count,
         ageFilter: (res) => {
+          const children = filterCriteria.children;
+          if(filterCriteria.pregnant){
+            children.push(-1);
+          }
           if (res.min_age != null && res.max_age != null) {
             return true;
           }
-          for (let i = 0; i < filterCriteria.length; i++) {
-            const child = filterCriteria[i].children;
+          for (let i = 0; i < filterCriteria.children.length; i++) {
+            const child = filterCriteria.children[i];
             if (res.min_age != null && res.min_age > child) {
               return false;
             }
@@ -224,6 +242,15 @@ export default class Results extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .results-view {
+  .infobox {
+    h2 {
+    }
+    background-color: var(--light-orange);
+    font-size: 0.75rem;
+    max-width: 30ch;
+    text-align: center;
+    padding: 1rem;
+  }
   // position: fixed;
   // top: 0;
   // left: 0;
@@ -280,7 +307,7 @@ export default class Results extends Vue {
     }
   }
 }
-.active-result {
+.active-result, .legal-window {
   position: fixed;
   padding: 4rem 1rem;
   box-sizing: border-box;

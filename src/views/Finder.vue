@@ -1,20 +1,27 @@
 <template>
   <div class="finder">
-    <!-- <h1>AFQ</h1> -->
-    <!-- ---------- PAGE 00 ---------- -->
     <form>
+      <!-- <h1>AFQ</h1> -->
+      <!-- ---------- PAGE 00 ---------- -->
+
       <div class="page" v-if="page == 0">
         <h1>Wohnort</h1>
         <div class="field">
-          <label for="plz">Postleitzahl:</label>
+          <label for="postalcode">Postleitzahl:</label>
           <input
             type="tel"
-            id="plz"
-            v-model="plz"
+            id="postalcode"
+            v-model="postalcode"
             pattern="[0-9]*"
             maxlength="10"
           />
-          <p class="description">Beschreibung</p>
+        </div>
+        <div class="field">
+          <p class="description">
+            Anhand deiner Postleitzahl ordnen wir die für dich passenden
+            Programme in deinem Bundesland und, wenn vorhanden, auch in deiner
+            Stadt zu.
+          </p>
         </div>
       </div>
       <!-- ---------- PAGE 01 ---------- -->
@@ -22,6 +29,12 @@
         <h1>Kinder</h1>
         <div class="field horizontal checkbox">
           <label for="pregnant">Bist du schwanger?</label>
+          <label
+            for="pregnant"
+            class="checkbox"
+            :class="{ 'is-true': pregnant }"
+            >{{ pregnant ? "Ja" : "Nein" }}</label
+          >
           <input
             type="checkbox"
             name="pregnant"
@@ -39,6 +52,13 @@
             max="20"
             step="1"
           />
+        </div>
+        <div class="field">
+          <p class="description">
+            In vielen Programmen richtet sich die Förderung nach der Anzahl der
+            Kinder und vor allem auch nach deren Alter. Deshalb ist eine genaue
+            Alterseingabe notwendig. Einige Programme gelten nur für Schwangere.
+          </p>
         </div>
         <div
           class="field select"
@@ -75,7 +95,7 @@
       </div>
       <!-- ---------- PAGE 02 ---------- -->
       <div class="page" v-if="page == 2">
-        <h2>Lebenssituation</h2>
+        <h1>Lebenssituation</h1>
         <div class="field select">
           <label for="mariageStatus">Familienstand und Lebenssituation</label>
           <select id="mariageStatus" v-model="mariageStatus">
@@ -87,15 +107,25 @@
               {{ mariageTypeOption.name }}
             </option>
           </select>
-          <p class="description">Beschreibung</p>
+        </div>
+        <div class="field">
+          <p class="description">
+            Eigentlich gibt es nur drei Familienstände. Damit wir aber
+            passgenauer arbeiten können, kannst du dich auch schon in der
+            Trennungsphase informieren. Besonderes Augenmerk legen wir auf das
+            Thema Sicherheit und Gewaltschutz.
+          </p>
         </div>
       </div>
       <!-- ---------- PAGE 03 ---------- -->
       <div class="page" v-if="page == 3">
-        <h2>Krankenkasse</h2>
+        <h1>Krankenversicherung</h1>
         <div class="field">
-          <div class="field radio horizontal">
-            <label for="insuranceTypZero">Gesetzlich Versichert</label>
+          <div class="field radio">
+            <label for="insuranceTypZero"
+              >Gesetzlich Versichert
+              <span class="radio" :class="{ active: insuranceTyp == 1 }"></span
+            ></label>
             <input
               type="radio"
               id="insuranceTypZero"
@@ -104,7 +134,6 @@
             />
           </div>
           <div class="field select" v-if="insuranceTyp == 1">
-            <label for="insurancePublic">Krankenversicherung</label>
             <select id="insurancePrivate" v-model="insurancePublic">
               <option
                 v-for="(publicInsurance, index) in publicInsurances"
@@ -117,8 +146,11 @@
           </div>
         </div>
         <div class="field">
-          <div class="field radio horizontal">
-            <label for="insuranceTypOne">Privat Versichert</label>
+          <div class="field radio">
+            <label for="insuranceTypOne"
+              >Privat Versichert
+              <span class="radio" :class="{ active: insuranceTyp == 2 }"></span
+            ></label>
             <input
               type="radio"
               id="insuranceTypOne"
@@ -127,7 +159,6 @@
             />
           </div>
           <div class="field select" v-if="insuranceTyp == 2">
-            <label for="insurancePrivate">Krankenversicherung</label>
             <select id="insurancePrivate" v-model="insurancePrivate">
               <option
                 v-for="(privateInsurance, index) in privateInsurances"
@@ -140,8 +171,11 @@
           </div>
         </div>
         <div class="field">
-          <div class="field radio horizontal">
-            <label for="insuranceTypTwo">nicht Versichert</label>
+          <div class="field radio">
+            <label for="insuranceTypTwo"
+              >nicht Versichert
+              <span class="radio" :class="{ active: insuranceTyp == 0 }"></span
+            ></label>
             <input
               type="radio"
               id="insuranceTypTwo"
@@ -149,12 +183,18 @@
               value="0"
             />
           </div>
-          <p class="description">Beschreibung</p>
+        </div>
+
+        <div class="field">
+          <p class="description">
+            Viele Krankenversicherungen haben spezielle Angebote. Diese sind im
+            Finder aufgenommen.
+          </p>
         </div>
       </div>
       <!-- ---------- PAGE 04 ---------- -->
       <div class="page" v-if="page == 4">
-        <h2>Arbeit</h2>
+        <h1>Arbeit</h1>
         <div class="field select">
           <label for="jobStatus">Art der Beschäftigung</label>
           <select id="jobStatus" v-model.number="jobStatus">
@@ -166,26 +206,48 @@
               {{ job.name }}
             </option>
           </select>
-          <p class="description">Beschreibung</p>
+        </div>
+        <div class="field">
+          <p class="description">
+            Gib bitte hier den aktuellen Stand deiner
+            <b>beruflichen Situation</b> ein. Wenn du in Teilzeit arbeitest,
+            achte bitte auf die richtige Wahl der Stunden.
+          </p>
         </div>
       </div>
       <!-- ---------- PAGE 05 ---------- -->
       <div class="page" v-if="page == 5">
-        <h2>Einkommen</h2>
+        <h1>Einkommen</h1>
         <div class="field number">
           <label for="income">Einkommen pro Monat</label>
-          <input type="number" id="income" v-model="income" min="0" />€
-
-          <p class="description">Beschreibung</p>
+          <input type="number" id="income" v-model="income" min="0" />
+        </div>
+        <div class="field">
+          <p class="description">
+            Hier gibst du dein durchschnittliches monatliches
+            <b>Bruttoeinkommen</b> ein. Beziehst du <b>Geld vom Staat</b> dann
+            gib auch das hier ein. Zum Bruttoeinkommen gehört auch
+            <b>Unterhalt</b> für die Kinder, <b>Witwenrente</b>,
+            <b>Mieteinnahmen</b>, sowie
+            <b>Erwerbsminderungs- oder Berufsunfähigkeitsrenten</b>.
+            <b>Kindergeld</b> kannst du <b>unberücksichtigt</b> lassen.
+          </p>
         </div>
       </div>
       <!-- ---------- PAGE 06 ---------- -->
       <div class="page" v-if="page == 6">
-        <h2>Wohnsituation</h2>
+        <h1>Wohnsituation</h1>
         <div class="field number">
-          <label for="rent">Miete</label>
-          <input type="number" id="rent" v-model="rent" min="0" />€
-          <p class="description">Beschreibung</p>
+          <label for="rent">Miete/ Kreditrate</label>
+          <input type="number" id="rent" v-model="rent" min="0" />
+        </div>
+        <div class="field">
+          <p class="description">
+            Gib uns bitte deine <b>Nettomiete</b> (also ohne Nebenkosten) an. Du bist
+            Eigentümerin und zahlst <b>Kreditraten</b> für dein Haus oder deine
+            Wohnung? Gib diese bitte <b>inklusive Zins und Tilgung</b> an. Bei
+            endfälligen Darlehen denke auch an die Ansparraten zum Tilgungsersatz.
+          </p>
         </div>
       </div>
       <nav>
@@ -210,7 +272,7 @@ import axios from "axios";
 @Component
 export default class Finder extends Vue {
   public page = 0;
-  public plz: any = "68159";
+  public postalcode: any = "";
   public numberOfChildren = 0;
   public children: any[] = [];
   public mariageStatus: number | null = null;
@@ -223,24 +285,6 @@ export default class Finder extends Vue {
   public pregnant = false;
 
   //options
-
-  childAgeTypes = [
-    { value: "0", name: "Vorgeburtlich" },
-    { value: "1", name: "0 - 12 Monate" },
-    { value: "2", name: "12 - 18 Monate" },
-    { value: "3", name: "18 - 24 Monate" },
-    { value: "4", name: "2 - 3 Jahre" },
-    { value: "5", name: "4 - 5 Jahre" },
-    { value: "6", name: "6 - 7 Jahre" },
-    { value: "7", name: "8 - 10 Jahre" },
-    { value: "8", name: "10 - 11 Jahre" },
-    { value: "9", name: "12 - 13 Jahre" },
-    { value: "10", name: "13 - 14 Jahre" },
-    { value: "11", name: "14 - 15 Jahre" },
-    { value: "12", name: "15 - 17 Jahre" },
-    { value: "13", name: "Ab 18 in Ausbildung" },
-  ];
-
   mariageTypeOptions = [];
 
   insurancesOptions = [];
@@ -276,9 +320,10 @@ export default class Finder extends Vue {
   get isDisabled(): boolean {
     return [
       () =>
-        this.plz.match(/^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$/) == null ||
-        this.plz.match(/^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$/).length ==
-          0,
+        this.postalcode.match(/^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$/) ==
+          null ||
+        this.postalcode.match(/^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$/)
+          .length == 0,
       () => !this.checkAllChildren,
       () => this.mariageStatus == null,
       () =>
@@ -298,7 +343,7 @@ export default class Finder extends Vue {
       this.page++;
     } else {
       console.log({
-        postalCode: this.plz,
+        postalCode: this.postalcode,
         numberOfChildren: this.numberOfChildren,
         children: this.children,
         mariageStatus: this.mariageStatus,
@@ -312,11 +357,11 @@ export default class Finder extends Vue {
         jobStatus: this.jobStatus,
         income: this.income,
         rent: this.rent,
-        pregnant: this.pregnant
+        pregnant: this.pregnant,
       });
 
       this.$cookies.set("finder_value", {
-        postalCode: this.plz,
+        postalCode: this.postalcode,
         numberOfChildren: this.numberOfChildren,
         children: this.children,
         mariageStatus: this.mariageStatus,
@@ -330,7 +375,7 @@ export default class Finder extends Vue {
         jobStatus: this.jobStatus,
         income: this.income,
         rent: this.rent,
-        pregnant: this.pregnant
+        pregnant: this.pregnant,
       });
       this.$router.push("/results");
     }
@@ -368,137 +413,160 @@ export default class Finder extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-form {
-  position: absolute;
-  width: 100%;
-  .page {
-    position: relative;
+.finder {
+  display: block;
+  overflow-y: auto;
+  min-height: calc(100vh - 150px);
+  form {
+    box-sizing: border-box;
     width: 100%;
-    min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    .field {
+    justify-content: space-around;
+    min-height: 100%;
+    .page {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: var(--light-orange);
-      padding: 1rem;
-      border-radius: 4px;
-      min-width: 450px;
       justify-content: center;
-      &.horizontal {
-        flex-direction: row;
-        gap: 1rem;
-        label {
-          margin: 0;
+      gap: 16px;
+      .field {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: var(--light-orange);
+        padding: 1rem;
+        box-sizing: border-box;
+        border-radius: 4px;
+        width: 100%;
+        @media (min-width: 450px) {
+          width: 450px;
         }
-        input,
-        select {
-          margin: 0;
-        }
-      }
-      label {
-        margin-bottom: 1rem;
-        font-weight: bold;
-        font-size: 0.9rem;
-      }
-      input,
-      select {
-        margin-bottom: 0.75rem;
-        border: none;
-        outline: none;
-        padding: 0.25rem;
-        border-radius: 0.5rem;
-        text-align: center;
-        color: var(--blue);
-        font-weight: bold;
-        option {
-          text-align: center;
-        }
-      }
-
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      /* Firefox */
-      input[type="number"] {
-        -moz-appearance: textfield;
-      }
-      &.checkbox {
-        input[type="checkbox"] {
-          &:checked {
+        justify-content: center;
+        &.horizontal {
+          flex-direction: row;
+          justify-content: space-around;
+          gap: 1rem;
+          label {
+            margin: 0;
+            text-align: left;
+          }
+          input,
+          select {
+            margin: 0;
           }
         }
         label {
-          
+          margin-bottom: 1rem;
+          font-weight: bold;
+          text-align: center;
+          // width: 100%;
+          // text-align: center;
+          font-size: 1rem;
+          &.checkbox {
+            background-color: var(--orange);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            color: white;
+            margin: 0;
+            min-width: 100px;
+            text-align: center;
+            &.is-true {
+              background-color: var(--cyan);
+            }
+          }
+        }
+        input,
+        select {
+          margin-bottom: 0.75rem;
+          border: none;
+          outline: none;
+          padding: 0.25rem;
+          border-radius: 0.5rem;
+          text-align: center;
+          font-size: 0.75rem;
+          color: var(--blue);
+          font-weight: bold;
+          width: 100%;
+
+          option {
+            // text-align: center;;
+          }
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        /* Firefox */
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+        &.radio {
+          input[type="radio"] {
+            display: none;
+          }
+          label {
+            margin: 0;
+            cursor: pointer;
+          }
+          span.radio {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px var(--cyan) solid;
+            border-radius: 50%;
+            margin-bottom: -4px;
+            margin-left: 5px;
+            &.active {
+              background-color: var(--cyan);
+            }
+          }
+        }
+        &.checkbox {
+          input[type="checkbox"] {
+            display: none;
+          }
+        }
+        p.description {
+          // margin: 0;
+          font-size: 0.75rem;
         }
       }
-      p.description {
-        margin: 0;
-        font-size: 0.75rem;
+    }
+    nav {
+      position: sticky;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 1rem;
+      bottom: 0px;
+      flex-direction: column;
+
+      @media (min-width: 450px) {
+        flex-direction: row;
+      }
+      button {
+        // background-color: var(--bright-orange);
+        // color: var(--blue);
+        // border: none;
+        // padding: 0.25rem 0.5rem;
+        // border-radius: 8px;
+        // cursor: pointer;
+        // font-weight: 500;
+        // transition: 200ms background-color, 200ms color;
+        &.primary {
+          // background: var(--orange);
+        }
+        &:disabled {
+          // color: #888;
+          // background: #eee;
+        }
       }
     }
-  }
-  nav {
-    position: sticky;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    bottom: 100px;
-    button {
-      background-color: var(--bright-orange);
-      color: var(--blue);
-      border: none;
-      padding: 0.25rem 0.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: 200ms background-color, 200ms color;
-      &.primary {
-        background: var(--orange);
-      }
-      &:disabled {
-        color: #888;
-        background: #eee;
-      }
-    }
-    // &:hover {
-    //   background: #fdebf9;
-    // }
-    // &:focus {
-    //   background: #ffd1f4;
-    //   outline: none;
-    // }
   }
 }
-// .page {
-//   position: absolute;
-//   width: 100%;
-//   min-height: 100%;
-//   h2 {
-//   }
-//   form {
-//     position: absolute;
-//     width: 100%;
-//     min-height: 100%;
-//     .fields {
-//       position: absolute;
-//       display: flex;
-//       flex-direction: column;
-//       justify-content: center;
-//       width: 100%;
-//       min-height: 100%;
-//     }
-//     nav {
-//       bottom: 16px;
-//       position: sticky;
-//     }
-//   }
-// }
 </style>
