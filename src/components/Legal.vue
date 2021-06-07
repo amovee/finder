@@ -7,14 +7,14 @@
         unverbindlichen Informationszugang für alle, die Alleinerziehend sind.
       </p>
       <p>
-        Tool informiert dich schnell und umfassend über Geld-, Sach - Beratungs-
+        Das Tool informiert dich schnell und umfassend über Geld-, Sach - Beratungs-
         und Gesundheitsleistungen und gibt Dir einen Überblick über wesentliche
         Angebote und Leistungen bietet.
       </p>
       <p>
         Für die Vollständigkeit und Richtigkeit der Angaben übernehmen wir keine
         Haftung. Nach der Beantwortung der Fragen erhältst du von uns eine
-        unverbindliche Zusammenstellung, inwieweit eine Programme, Angebote und
+        unverbindliche Zusammenstellung, inwieweit Programme, Angebote und
         Leistungen für dich in Frage kommen. Wir bieten weder Rechts- noch
         Steuerberatung an. Bei Fragen rechtlicher, steuerlicher oder
         finanzplanerischer Natur sollten Experten der jeweiligen Themenfelder
