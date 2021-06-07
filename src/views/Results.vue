@@ -11,40 +11,16 @@
         </li>
       </ul>
     </nav>
-    <div v-if="this.activeCategory != null" class="category">
+    <div v-if="!!this.activeCategory" class="category">
       <h1>{{ activeCategory.name }}</h1>
       <div class="description" v-html="activeCategory.description"></div>
-      <div class="results">
-        <div
-          class="result"
-          v-for="(result, index) in filteredResults"
+      <div class="results" v-if="!isLoading">
+        <ResultBox
+          v-for="(result, index) in results[activeCategory.name]"
           :key="index"
-        >
-          <h2>{{ result.name }}</h2>
-          <span class="type">{{ result.type.name }}</span>
-
-          <h4
-            v-if="result.start_date != null || result.end_date == null"
-            class="time"
-          >
-            <div class="start" v-if="result.start_date != null">
-              vom<span class="date">{{
-                timeFormatting(result.start_date)
-              }}</span>
-            </div>
-            <div class="end" v-if="result.end_date != null">
-              bis zum<span class="date">{{
-                timeFormatting(result.end_date)
-              }}</span>
-            </div>
-          </h4>
-          <div
-            class="short_description"
-            v-html="result.short_description"
-          ></div>
-          <!-- {{result}} -->
-          <button @click="activeResult = result">Details</button>
-        </div>
+          :result="result"
+          @open="openResult"
+        />
       </div>
     </div>
     <div v-if="activeResult" class="active-result">
@@ -59,24 +35,26 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Result from "../components/Result.vue";
+import ResultBox from "../components/ResultBox.vue";
 import axios from "axios";
-import { states } from "../components/plz";
+import { states } from "../shared/helpers";
 
 @Component({
   components: {
     Result,
+    ResultBox,
   },
 })
 export default class Results extends Vue {
   public categories: any[] = [];
   public activeCategory: any = null;
-  public results: any[] = [];
+  public results: { [key: string]: any[] } = {};
   public actions: any[] = [];
   public joblist: any[] = [];
   public resultTypes: any = {};
   public activeResult: any = null;
-  categoriesLoadedV = false;
   mariageTypeOptions: any[] = [];
+  public loadingResults = true;
   constructor() {
     super();
   }
@@ -104,12 +82,12 @@ export default class Results extends Vue {
       };
     });
 
-    // console.log(this.categories);
     this.navigate(this.categories[0]);
-    // console.log(a.filter((d: any)=>d.category == this.categories[this.activeCategory].id));
+  }
+  openResult(result: any) {
+    this.activeResult = result;
   }
   get currentActions() {
-    console.log(this.activeResult);
     return this.actions.filter((action: any) => {
       for (let i = 0; i < this.activeResult.actions.length; i++) {
         const id = this.activeResult.actions[i];
@@ -120,126 +98,125 @@ export default class Results extends Vue {
   }
   async navigate(category: any) {
     this.activeCategory = category;
-    console.log(this.activeCategory);
-    this.results = (
-      await axios.get(
-        "https://afq-t32f44ncfa-ey.a.run.app/items/result?fields=*,has_job.joblist_id,has_mariage_type.*&filter[category][_eq]=" +
-          this.activeCategory.id
-      )
-    ).data.data;
+    await this.getCategoryResults();
   }
 
-  get filteredResults(): any[] {
-    const filterCriteria: any = this.$cookies.get("finder_value");
-    // console.log(filterCriteria);
-    // end_date: (...)
-    // max_rent: (...)
-    // min_rent: (...)
-    // min_income: (...)
-    // max_income: (...)
-    // postalcodes: (...)
-    // max_children_count: (...)
-    // min_children_count: (...)
-    // region: (...)
-    // has_job: (...)
-    // has_mariage_type: (...)
+  async getCategoryResults(): Promise<any[]> {
+    if (this.activeCategory) {
+      if (!this.results[this.activeCategory.name]) {
+        this.loadingResults = true;
+        this.results[this.activeCategory.name] = this.filterResults(
+          (
+            await axios.get(
+              "https://afq-t32f44ncfa-ey.a.run.app/items/result?fields=*,has_job.joblist_id,has_mariage_type.,actions.*.*.*&filter[category][_eq]=" +
+                this.activeCategory.id
+            )
+          ).data.data
+        );
+        this.loadingResults = false;
+        return this.results[this.activeCategory.name];
+      } else {
+        return this.results[this.activeCategory.name];
+      }
+    }
+    return await [];
+  }
 
+  get isLoading(): boolean {
+    return this.loadingResults;
+  }
+
+  filterResults(results: any[]): any[] {
+    const filterCriteria: any = this.$cookies.get("finder_value");
+    console.log(this.results, filterCriteria);
+
+    // TODO:
     // has_insurance: Array(0)
     //age
 
-    return this.results
-      .filter((res) => {
-        const dateFilter: boolean =
-          res.end_date == null || new Date("2022-12-31").getTime() > Date.now();
-        const maxIncomeFilter: boolean =
-          res.max_income == null || filterCriteria.income <= res.max_income;
-        const minIncomeFilter: boolean =
-          res.min_income == null || filterCriteria.income >= res.min_income;
-        const maxRentFilter: boolean =
-          res.max_rent == null || filterCriteria.rent <= res.max_rent;
-        const minRentFilter: boolean =
-          res.min_rent == null || filterCriteria.rent >= res.min_rent;
-        const maxChildrenCountFilter: boolean =
+    if (results) {
+      const filters: { [key: string]: (res: any) => boolean } = {
+        dateFilter: (res) =>
+          res.end_date == null || new Date("2022-12-31").getTime() > Date.now(),
+        maxIncomeFilter: (res) =>
+          res.max_income == null || filterCriteria.income <= res.max_income,
+        minIncomeFilter: (res) =>
+          res.min_income == null || filterCriteria.income >= res.min_income,
+        maxRentFilter: (res) =>
+          res.max_rent == null || filterCriteria.rent <= res.max_rent,
+        minRentFilter: (res) =>
+          res.min_rent == null || filterCriteria.rent >= res.min_rent,
+        maxChildrenCountFilter: (res) =>
           res.max_children_count == null ||
-          filterCriteria.numberOfChildren <= res.max_children_count;
-        const minChildrenCountFilter: boolean =
+          filterCriteria.numberOfChildren <= res.max_children_count,
+        minChildrenCountFilter: (res) =>
           res.min_children_count == null ||
-          filterCriteria.numberOfChildren >= res.min_children_count;
-
-        // console.log(res, res.start_date, res.end_date);
-
-        // TODO: Make it faster
-        let postalCodesFilter = false;
-        if (res.postalcodes != null) {
-          res.postalcodes.split(",").forEach((codes: any) => {
-            if (filterCriteria.postalCode.startsWith(codes)) {
-              postalCodesFilter = true;
+          filterCriteria.numberOfChildren >= res.min_children_count,
+        ageFilter: (res) => {
+          if (res.min_age != null && res.max_age != null) {
+            return true;
+          }
+          for (let i = 0; i < filterCriteria.length; i++) {
+            const child = filterCriteria[i].children;
+            if (res.min_age != null && res.min_age > child) {
+              return false;
             }
-          });
-        } else {
-          postalCodesFilter = true;
-        }
-
-        let inRegionFilter = true;
-        if (res.region != null) {
-          inRegionFilter = states[+res.region].postalCodes.includes(
-            filterCriteria.postalCode
-          );
-        }
-
-        const hasJobFilter =
+            if (res.max_age != null && res.max_age < child) {
+              return false;
+            }
+          }
+          return true;
+        },
+        pregnantFilter: (res) => !res.pregnant || filterCriteria.pregnant,
+        hasJobFilter: (res) =>
           res.has_job == null || res.has_job.length == 0
             ? true
             : res.has_job
                 .map((r: any) => r.joblist_id)
-                .includes(filterCriteria.jobStatus);
-        const hasMariageTypeFilter =
+                .includes(filterCriteria.jobStatus),
+        hasMariageTypeFilter: (res) =>
           res.has_mariage_type == null || res.has_mariage_type.length == 0
             ? true
             : res.has_mariage_type
                 .map((r: any) => r.mariage_types_id)
-                .includes(filterCriteria.mariageStatus.id);
+                .includes(filterCriteria.mariageStatus.id),
 
-        return (
-          dateFilter &&
-          maxIncomeFilter &&
-          minIncomeFilter &&
-          minRentFilter &&
-          maxRentFilter &&
-          postalCodesFilter &&
-          maxChildrenCountFilter &&
-          minChildrenCountFilter &&
-          inRegionFilter &&
-          hasJobFilter &&
-          hasMariageTypeFilter
-        );
-      })
-      .map((res: any) => {
-        res.type = this.resultTypes[res.type];
-        return res;
-      })
-      .sort((resA: any, resB: any) => resB.type.weight - resA.type.weight);
-  }
-  public timeFormatting(date: string): string {
-    const getMonth = (d: string) => {
-      return [
-        "Januar",
-        "Februar",
-        "März",
-        "April",
-        "Mai",
-        "Juni",
-        "Juli",
-        "August",
-        "September",
-        "Oktober",
-        "November",
-        "Dezember",
-      ][new Date(d).getMonth()];
-    };
-    const getYear = (d: string) => new Date(d).getFullYear();
-    const getDay = (d: string) => new Date(d).getDate();
-    return getDay(date) + ". " + getMonth(date) + " " + getYear(date);
+        addressFilter: (res) => {
+          let postalCodesFilter = false;
+          if (res.postalcodes != null) {
+            res.postalcodes.split(",").forEach((codes: any) => {
+              if (filterCriteria.postalCode.startsWith(codes)) {
+                postalCodesFilter = true;
+              }
+            });
+          } else {
+            postalCodesFilter = true;
+          }
+
+          let inRegionFilter = true;
+          if (res.region != null) {
+            inRegionFilter = states[+res.region].postalCodes.includes(
+              filterCriteria.postalCode
+            );
+          }
+          return inRegionFilter && postalCodesFilter;
+        },
+      };
+
+      for (const key in filters) {
+        if (Object.prototype.hasOwnProperty.call(filters, key)) {
+          results = results.filter(filters[key]);
+        }
+      }
+
+      return results
+        .map((res: any) => {
+          res.type = this.resultTypes[res.type];
+          return res;
+        })
+        .sort((resA: any, resB: any) => resB.type.weight - resA.type.weight);
+    }
+    return [];
   }
 }
 </script>
@@ -247,25 +224,28 @@ export default class Results extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .results-view {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  // position: fixed;
+  // top: 0;
+  // left: 0;
+  // width: 100vw;
+  // height: 100vh;
   overflow-y: auto;
-  padding-top: 3rem;box-sizing: border-box;
+  // padding-top: 3rem;
+  box-sizing: border-box;
   nav {
     font-weight: bold;
-    font-size: 0.75rem;
+    font-size: 1rem;
     ul {
       list-style: none;
       padding: 0.5rem;
       margin: 0;
-      line-height: 1rem;
+      line-height: 1.25rem;
       li {
         a {
+          display: inline-block;
           transition: 200ms color;
           cursor: pointer;
+          padding: 12px;
           &.active,
           &:hover {
             color: var(--orange);
@@ -275,47 +255,28 @@ export default class Results extends Vue {
     }
   }
   .category {
-    padding: 1rem;
-    // position: absolute;
-    // top: 0;
-    // right: 0;
-    // width: 60%;
-    .description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5px;
+    @media (min-width: 800px) {
+      padding: 1rem;
+    }
+    > .description {
       text-align: center;
       width: 100%;
-      margin-bottom: 3rem;
+      padding: 0 0.5rem;
+      box-sizing: border-box;
+      // margin-bottom: 3rem;
+      @media (min-width: 600px) {
+        padding-bottom: 3rem;
+      }
     }
     .results {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      .result {
-        background-color: var(--light-orange);
-        padding: 1rem;
-        box-sizing: border-box;
-        h2 {
-          font-size: 1.25rem;
-          color: var(--orange);
-          margin: 0 0 0.5rem 0;
-        }
-        .type {
-          font-size: 0.75rem;
-          font-weight: bold;
-          display: inherit;
-        }
-        button {
-          background-color: var(--orange);
-          color: white;
-          border: none;
-          padding: 0.25rem 0.5rem;
-          border-radius: 8px;
-          cursor: pointer;
-        }
-        a {
-          color: var(--orange);
-        }
-        width: calc(50% - 0.5rem);
-      }
+      justify-content: center;
     }
   }
 }

@@ -20,7 +20,7 @@
       <!-- ---------- PAGE 01 ---------- -->
       <div class="page" v-if="page == 1">
         <h1>Kinder</h1>
-        <div class="field horizontal">
+        <div class="field horizontal checkbox">
           <label for="pregnant">Bist du schwanger?</label>
           <input
             type="checkbox"
@@ -94,7 +94,7 @@
       <div class="page" v-if="page == 3">
         <h2>Krankenkasse</h2>
         <div class="field">
-          <div class="field radio">
+          <div class="field radio horizontal">
             <label for="insuranceTypZero">Gesetzlich Versichert</label>
             <input
               type="radio"
@@ -117,7 +117,7 @@
           </div>
         </div>
         <div class="field">
-          <div class="field radio">
+          <div class="field radio horizontal">
             <label for="insuranceTypOne">Privat Versichert</label>
             <input
               type="radio"
@@ -140,7 +140,7 @@
           </div>
         </div>
         <div class="field">
-          <div class="field radio">
+          <div class="field radio horizontal">
             <label for="insuranceTypTwo">nicht Versichert</label>
             <input
               type="radio"
@@ -149,9 +149,8 @@
               value="0"
             />
           </div>
+          <p class="description">Beschreibung</p>
         </div>
-
-        <div class="field"><p class="description">Beschreibung</p></div>
       </div>
       <!-- ---------- PAGE 04 ---------- -->
       <div class="page" v-if="page == 4">
@@ -167,8 +166,8 @@
               {{ job.name }}
             </option>
           </select>
+          <p class="description">Beschreibung</p>
         </div>
-        <div class="field"><p class="description">Beschreibung</p></div>
       </div>
       <!-- ---------- PAGE 05 ---------- -->
       <div class="page" v-if="page == 5">
@@ -176,8 +175,9 @@
         <div class="field number">
           <label for="income">Einkommen pro Monat</label>
           <input type="number" id="income" v-model="income" min="0" />€
+
+          <p class="description">Beschreibung</p>
         </div>
-        <div class="field"><p class="description">Beschreibung</p></div>
       </div>
       <!-- ---------- PAGE 06 ---------- -->
       <div class="page" v-if="page == 6">
@@ -185,8 +185,8 @@
         <div class="field number">
           <label for="rent">Miete</label>
           <input type="number" id="rent" v-model="rent" min="0" />€
+          <p class="description">Beschreibung</p>
         </div>
-        <div class="field"><p class="description">Beschreibung</p></div>
       </div>
       <nav>
         <button type="button" v-on:click="prev()">Zurück</button>
@@ -210,7 +210,7 @@ import axios from "axios";
 @Component
 export default class Finder extends Vue {
   public page = 0;
-  public plz: any = "10552";
+  public plz: any = "68159";
   public numberOfChildren = 0;
   public children: any[] = [];
   public mariageStatus: number | null = null;
@@ -312,6 +312,7 @@ export default class Finder extends Vue {
         jobStatus: this.jobStatus,
         income: this.income,
         rent: this.rent,
+        pregnant: this.pregnant
       });
 
       this.$cookies.set("finder_value", {
@@ -329,6 +330,7 @@ export default class Finder extends Vue {
         jobStatus: this.jobStatus,
         income: this.income,
         rent: this.rent,
+        pregnant: this.pregnant
       });
       this.$router.push("/results");
     }
@@ -427,6 +429,15 @@ form {
       /* Firefox */
       input[type="number"] {
         -moz-appearance: textfield;
+      }
+      &.checkbox {
+        input[type="checkbox"] {
+          &:checked {
+          }
+        }
+        label {
+          
+        }
       }
       p.description {
         margin: 0;
