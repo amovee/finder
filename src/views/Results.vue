@@ -142,8 +142,6 @@ export default class Results extends Vue {
 
   filterResults(results: any[]): any[] {
     const filterCriteria: any = this.$cookies.get("finder_value");
-    console.log(this.results, filterCriteria);
-
     // TODO:
     // has_insurance: Array(0)
     //age
