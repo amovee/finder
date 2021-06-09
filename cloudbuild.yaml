@@ -1,8 +1,7 @@
 steps:
- name: 'gcr.io/cloud-builders/docker'
- args: ['build', '-t',  'gcr.io/deft-duality-311814/amuvee:$SHORT_SHA', '.']
- name: 'gcr.io/cloud-builders/docker'
- args: ['push',  'gcr.io/deft-duality-311814/amuvee:$SHORT_SHA']
- name: 'gcr.io/cloud-builders/gcloud'
- args: ['beta', 'run', 'deploy', 'amuvee', '--region=europe-west3', \
- '--platform=managed', '--image=gcr.io/deft-duality-311814/amuvee:$SHORT_SHA']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t',  'gcr.io/deft-duality-311814/amuvee:$SHORT_SHA', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push',  'gcr.io/deft-duality-311814/amuvee:$SHORT_SHA']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'deploy', 'amuvee', '--region=europe-west3', '--platform=managed', '--image=gcr.io/deft-duality-311814/amuvee:$SHORT_SHA']
