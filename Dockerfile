@@ -6,7 +6,7 @@ RUN npm install
 COPY . .
 RUN npm run build --prod
 
-# stage 2
+# stage 2 build nginx 
 FROM nginx:1.17.1-alpine AS prod-stage
 #COPY ./nginx.conf /etc/nginx/nginx.conf
 # WORKDIR /usr/src/app
