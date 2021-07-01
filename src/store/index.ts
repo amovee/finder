@@ -5,8 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    formValues: {}
   },
   mutations: {
+    formValues: (state, values) =>
+       {
+        localStorage.setItem('formValues', values);
+         state.formValues = values;
+        
+        }
   },
   actions: {
   },

@@ -283,6 +283,7 @@ export default class Finder extends Vue {
   public income = 0;
   public rent = 0;
   public pregnant = false;
+  public currentValues: any = null;
 
   //options
   mariageTypeOptions = [];
@@ -342,25 +343,8 @@ export default class Finder extends Vue {
     if (!this.isLast) {
       this.page++;
     } else {
-      console.log({
-        postalCode: this.postalcode,
-        numberOfChildren: this.numberOfChildren,
-        children: this.children,
-        mariageStatus: this.mariageStatus,
-        insuranceTyp: this.insuranceTyp,
-        insurance:
-          this.insuranceTyp == 1
-            ? this.insurancePublic
-            : this.insuranceTyp == 2
-            ? this.insurancePrivate
-            : null,
-        jobStatus: this.jobStatus,
-        income: this.income,
-        rent: this.rent,
-        pregnant: this.pregnant,
-      });
 
-      this.$cookies.set("finder_value", {
+      this.currentValues = {
         postalCode: this.postalcode,
         numberOfChildren: this.numberOfChildren,
         children: this.children,
@@ -376,7 +360,14 @@ export default class Finder extends Vue {
         income: this.income,
         rent: this.rent,
         pregnant: this.pregnant,
-      });
+      };
+
+      // console.log( this.currentValues);
+
+      this.$store.commit("formValues", this.currentValues );
+
+      this.$cookies.set("finder_value",  this.currentValues);
+      
       this.$router.push("/results");
     }
   }

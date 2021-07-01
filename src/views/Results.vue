@@ -68,6 +68,7 @@ export default class Results extends Vue {
   public activeResult: any = null;
   mariageTypeOptions: any[] = [];
   public loadingResults = true;
+  public filter: any = null;
   legalMode = false;
   constructor() {
     super();
@@ -141,39 +142,49 @@ export default class Results extends Vue {
   }
 
   filterResults(results: any[]): any[] {
-    const filterCriteria: any = this.$cookies.get("finder_value");
+    this.filter = this.$cookies.get("finder_value");
+    
+    if(!this.filter ){
+        this.filter  =  this.$store.state.formValues;
+    }
+
+    if(!this.filter ){
+        this.filter  =  localStorage.getItem('formValues');
+    }
+    
     // TODO:
     // has_insurance: Array(0)
     //age
+    //console.log(localStorage.getItem('formValues'));
 
     if (results) {
       const filters: { [key: string]: (res: any) => boolean } = {
         dateFilter: (res) =>
           res.end_date == null || new Date("2022-12-31").getTime() > Date.now(),
         maxIncomeFilter: (res) =>
-          res.max_income == null || filterCriteria.income <= res.max_income,
+          res.max_income == null || this.filter.income <= res.max_income,
         minIncomeFilter: (res) =>
-          res.min_income == null || filterCriteria.income >= res.min_income,
+          res.min_income == null || this.filter.income >= res.min_income,
         maxRentFilter: (res) =>
-          res.max_rent == null || filterCriteria.rent <= res.max_rent,
+          res.max_rent == null || this.filter.rent <= res.max_rent,
         minRentFilter: (res) =>
-          res.min_rent == null || filterCriteria.rent >= res.min_rent,
+          res.min_rent == null || this.filter.rent >= res.min_rent,
         maxChildrenCountFilter: (res) =>
           res.max_children_count == null ||
-          filterCriteria.numberOfChildren <= res.max_children_count,
+          this.filter.numberOfChildren <= res.max_children_count,
         minChildrenCountFilter: (res) =>
           res.min_children_count == null ||
-          filterCriteria.numberOfChildren >= res.min_children_count,
+          this.filter.numberOfChildren >= res.min_children_count,
         ageFilter: (res) => {
-          const children = filterCriteria.children;
-          if(filterCriteria.pregnant){
+          const children = this.filter.children;
+          if(this.filter.pregnant){
             children.push(-1);
           }
           if (res.min_age != null && res.max_age != null) {
             return true;
           }
-          for (let i = 0; i < filterCriteria.children.length; i++) {
-            const child = filterCriteria.children[i];
+          for (let i = 0; i < this.filter.children.length; i++) {
+            const child = this.filter.children[i];
             if (res.min_age != null && res.min_age > child) {
               return false;
             }
@@ -183,25 +194,25 @@ export default class Results extends Vue {
           }
           return true;
         },
-        pregnantFilter: (res) => !res.pregnant || filterCriteria.pregnant,
+        pregnantFilter: (res) => !res.pregnant || this.filter.pregnant,
         hasJobFilter: (res) =>
           res.has_job == null || res.has_job.length == 0
             ? true
             : res.has_job
                 .map((r: any) => r.joblist_id)
-                .includes(filterCriteria.jobStatus),
+                .includes(this.filter.jobStatus),
         hasMariageTypeFilter: (res) =>
           res.has_mariage_type == null || res.has_mariage_type.length == 0
             ? true
             : res.has_mariage_type
                 .map((r: any) => r.mariage_types_id)
-                .includes(filterCriteria.mariageStatus.id),
+                .includes(this.filter.mariageStatus.id),
 
         addressFilter: (res) => {
           let postalCodesFilter = false;
           if (res.postalcodes != null) {
             res.postalcodes.split(",").forEach((codes: any) => {
-              if (filterCriteria.postalCode.startsWith(codes)) {
+              if (this.filter.postalCode.startsWith(codes)) {
                 postalCodesFilter = true;
               }
             });
@@ -212,7 +223,7 @@ export default class Results extends Vue {
           let inRegionFilter = true;
           if (res.region != null) {
             inRegionFilter = states[+res.region].postalCodes.includes(
-              filterCriteria.postalCode
+              this.filter.postalCode
             );
           }
           return inRegionFilter && postalCodesFilter;
