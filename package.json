@@ -9,14 +9,20 @@
     "gh-pages-deploy": "node scripts/gh-pages-deploy.ts"
   },
   "dependencies": {
+    "@types/overlayscrollbars": "^1.12.1",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "overlayscrollbars": "^1.13.1",
+    "overlayscrollbars-vue": "^0.2.2",
+    "typeface-nunito-sans": "^1.1.13",
+    "typeface-playfair-display": "^1.1.13",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-cookies-ts": "^1.5.19",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "vuex-module-decorators": "^2.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",

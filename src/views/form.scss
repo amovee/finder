@@ -1,0 +1,119 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  margin-bottom: 80px;
+  ul.loop-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    li label {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 25px;
+      color: var(--dark-primary);
+      padding-right: 1rem;
+    }
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="date"]::-webkit-inner-spin-button,
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    // display: none;
+    // -webkit-appearance: none;
+    // opacity: 0;
+    color: red;
+  }
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  input[type="number"]:after {
+    content: "EUR";
+  }
+  input[type="number"],
+  input[type="text"],
+  input[type="date"] {
+    // height: 3rem;
+    // width: 88px;
+    padding: 12px 1rem;
+    border-radius: 4px;
+    font-style: normal;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e6e4e1;
+    color: #aaadb3;
+    line-height: 24px;
+    &::placeholder {
+      color: #aaadb3;
+      font-weight: 700;
+    }
+    &.active,
+    &:focus {
+      color: var(--dark-primary);
+      border: 1px solid #009eb2;
+      background: #e4f2f2;
+      box-shadow: 0px 4px 0px rgba(0, 158, 178, 0.1);
+      outline: none;
+      &::placeholder {
+        color: var(--dark-primary);
+        font-weight: 700;
+      }
+    }
+  }
+  .group.horizontal {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    .radio {
+      display: inline-block;
+      height: 3rem;
+      font-size: 18px;
+      color: var(--dark-primary);
+      input[type="radio"] {
+        display: none;
+      }
+      label {
+        display: inline-block;
+        padding: 12px 28px 11px 28px;
+        line-height: 25px;
+        cursor: pointer;
+      }
+      label {
+        outline: 1px solid var(--light-creme);
+        font-weight: 600;
+        border-radius: 24px;
+      }
+      input[type="radio"]:hover:not(:checked) + label {
+        font-weight: 700;
+        outline-width: 2px;
+      }
+      input[type="radio"]:checked + label {
+        font-weight: 700;
+        background: var(--light-green);
+        outline-color: var(--accent-green);
+        box-shadow: 0px 4px 0px rgba(0, 158, 178, 0.1);
+      }
+      input[type="radio"]:focus + label {
+        border-width: 2px;
+        font-weight: 700;
+        outline-color: var(--accent-green);
+      }
+      input[type="radio"]:disabled + label {
+        color: var(--gray);
+        background: #F7F7F7;
+        border-color: #D5DAE0;
+      }
+    }
+  }
+}
