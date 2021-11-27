@@ -237,6 +237,7 @@ export default class Finder extends Vue {
         flex-direction: column;
         justify-content: space-between;
         padding: 2rem 1rem;
+        min-height: 100vh;
         > * {
           width: 100%;
           max-width: 700px;
