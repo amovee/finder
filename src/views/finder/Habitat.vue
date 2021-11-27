@@ -10,7 +10,7 @@
           name="place"
           placeholder="PLZ"
           v-model="value.place"
-          @change="onChange"
+          @input="onChange"
           :class="value.place != null ? 'active' : ''"
           pattern="[0-9]{5}"
         />
@@ -61,7 +61,7 @@
             name="costs"
             v-model.number="value.costs"
             :class="value.costs != null ? 'active' : ''"
-            @change="onChange"
+            @input="onChange"
           />
         </div>
       </transition>

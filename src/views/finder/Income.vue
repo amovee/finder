@@ -11,7 +11,7 @@
           name="gross"
           v-model.number="value.gross"
           :class="value.gross != null ? 'active' : ''"
-          @change="onChange"
+          @input="onChange"
         />
       </div>
       <div class="group">
@@ -50,7 +50,7 @@
               name="disability_pension"
               :disabled="!value.disabilityPensionExists"
               v-model.number="value.disabilityPension"
-              @change="onChange"
+              @input="onChange"
             />
           </transition>
         </div>
@@ -91,7 +91,7 @@
               :disabled="!value.entertainsExists"
               v-model.number="value.entertains"
               :class="value.entertains != null ? 'active' : ''"
-              @change="onChange"
+              @input="onChange"
             />
           </transition>
         </div>
@@ -131,7 +131,7 @@
               :disabled="!value.childBenefitExists"
               v-model.number="value.childBenefit"
               :class="value.childBenefit != null ? 'active' : ''"
-              @change="onChange"
+              @input="onChange"
             />
           </transition>
         </div>
@@ -172,7 +172,7 @@
               :disabled="!value.rentalIncomeExists"
               v-model.number="value.rentalIncome"
               :class="value.rentalIncome != null ? 'active' : ''"
-              @change="onChange"
+              @input="onChange"
             />
           </transition>
         </div>
