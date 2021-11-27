@@ -50,17 +50,6 @@ header.result-header {
   justify-content: space-between;
   align-items: center;
   padding: 2rem 3rem;
-  .logo {
-    font-family: "Playfair Display";
-    text-decoration: none;
-    color: var(--dark-primary);
-    font-size: 40px;
-    font-weight: 700;
-    padding-bottom: 8px;
-    span {
-      color: var(--accent-red);
-    }
-  }
   nav {
     z-index: 1;
     position: absolute;
