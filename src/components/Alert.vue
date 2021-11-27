@@ -20,14 +20,14 @@ import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 })
 export default class Alert extends Vue {
   beforeDestroy() {
-    let a: any = document.getElementById("scroll");
-    var instance = OverlayScrollbars(a, {});
+    const a: any = document.getElementById("scroll");
+    const instance = OverlayScrollbars(a, {});
     instance.options("overflowBehavior.y", "scroll");
     instance.options("overflowBehavior.x", "scroll");
   }
   mounted() {
-    let a: any = document.getElementById("scroll");
-    var instance = OverlayScrollbars(a, {});
+    const a: any = document.getElementById("scroll");
+    const instance = OverlayScrollbars(a, {});
     instance.options("overflowBehavior.y", "hidden");
     instance.options("overflowBehavior.x", "hidden");
   }
