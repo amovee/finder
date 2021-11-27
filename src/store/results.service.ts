@@ -11,10 +11,6 @@ class ResultsService extends VuexModule {
   // public _answers = {"children":{"alreadyChildren":true,"numberOfChildren":2,"birthDates":{"0":"2021-11-26","1":"2021-11-26"},"pregnant":false,"isValid":true},"lifeSituation":{"lifeSituationBasic":1,"lifeSituationDivorce":1,"violence":false,"isValid":true},"housingSituation":{"place":"10000","housingSituationType":1,"costs":2222,"isValid":true},"insurance":{"type":1,"privateInsurances":1,"publicInsurances":null,"isValid":true},"working":{"situation":1,"jobType":null,"partTimeType":null,"education":1,"socialBenefitType":null,"isValid":true},"income":{"gross":10,"disabilityPensionExists":true,"disabilityPension":20,"entertainsExists":true,"entertains":30,"childBenefitExists":true,"childBenefit":40,"rentalIncomeExists":true,"rentalIncome":50,"isValid":true},"isValid":false}
 
   @Mutation
-  public updateCathegories(data: { id: number, cathegory: Cathegory }): void {
-    this._cathegories[data.id] = data.cathegory;
-  }
-  @Mutation
   public setCategoryResults(data: { id: number, results: any[] }): void {
     this._cathegories[data.id].content = data.results;
   }
@@ -29,21 +25,6 @@ class ResultsService extends VuexModule {
         id: rt.id,
         name: rt.name,
         weight: rt.weight,
-      }
-    });
-  }
-  @Mutation
-  public initActions(actions: []): void {
-    actions.forEach((a: any) => {
-      this._actions[a.id] = {
-        date: a.date,
-        description: a.description,
-        file: a.file,
-        id: a.id,
-        link: a.link,
-        name: a.name,
-        sort: a.sort,
-        type: a.type,
       }
     });
   }
@@ -76,15 +57,6 @@ class ResultsService extends VuexModule {
           })
         }
     });
-    // TODO: sort
-    // this._cathegories.forEach((cat: any) => {
-    //   cat.content.sort((a: any, b: any) => b.type.weight - a.type.weight);
-    // });
-  }
-  @Mutation
-  public loadCathegories(): void {
-    // TODO: 
-    this._cathegories = this.cathegories;
   }
   @Mutation
   public initAnswers(answers: FinderStatus) {
