@@ -24,8 +24,8 @@ export default class App extends Vue {}
 </script>
 <style lang="scss">
 @import "./normalize.scss";
-@import "../node_modules/typeface-playfair-display/index.css";
-@import "../node_modules/typeface-nunito-sans/index.css";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap');
 body {
   .view {
 

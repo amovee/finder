@@ -14,8 +14,6 @@
     "core-js": "^3.6.5",
     "overlayscrollbars": "^1.13.1",
     "overlayscrollbars-vue": "^0.2.2",
-    "typeface-nunito-sans": "^1.1.13",
-    "typeface-playfair-display": "^1.1.13",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-cookies-ts": "^1.5.19",
