@@ -214,13 +214,11 @@ export default class Finder extends Vue {
       left: 0;
     }
     @media (min-width: 1024px) {
-      width: auto;
+      position: relative;
+      width: 400px;
       top: inherit;
       left: inherit;
       transition: none;
-      position: relative;
-      grid-column: 1/2;
-      grid-row: 1/2;
     }
   }
 
@@ -228,6 +226,9 @@ export default class Finder extends Vue {
 
   main {
     flex-grow: 1;
+    @media (min-width: 1024px) {
+      width: calc(100% - 400px);
+    }
     .view {
       .view-content {
         display: flex;
@@ -242,10 +243,6 @@ export default class Finder extends Vue {
         }
         @media (min-width: 512px) {
           padding: 2rem 5rem 3rem 5rem;
-        }
-        @media (min-width: 1024px) {
-          // grid-column: 2 / 3;
-          // grid-row: 1 / 2;
         }
         // overflow-y: auto;
         box-sizing: border-box;
@@ -262,6 +259,7 @@ export default class Finder extends Vue {
         h3 {
           font-size: 22px;
           font-weight: 700;
+          line-height: 2rem;
           margin: 0 0 20px 0;
         }
 
