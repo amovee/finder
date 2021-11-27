@@ -41,7 +41,6 @@ export default class Card extends Vue {
     }
   }
   get date() {
-    // TODO: new Date(this.config.end_date).getTime() < Date.now() FILTER
     let start, end;
     if (
       this.config.start_date &&

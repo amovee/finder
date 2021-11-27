@@ -62,11 +62,14 @@ export default class CathegoryNav extends Vue {
 
   mounted() {
     this.onResize();
-    window.addEventListener("resize", this.onResize);
+    window.addEventListener("resize", this.onResize, true);
     this.cathegories = Object.values(this.$store.getters.cathegories);
     this.cathegories = this.cathegories.sort(
       (a: any, b: any) => a.sort - b.sort
     );
+  }
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize, true); 
   }
   onResize() {
     this.large = this.$refs.nav.clientWidth >= 1200;
