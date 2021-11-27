@@ -20,7 +20,7 @@
             v-for="(config, i) in current.content"
             :key="i"
             :config="config"
-            @open="openCard(i)"
+            @open="activeResult = i"
             @fav="updateFavorites"
           />
         </div>
@@ -34,7 +34,7 @@
             <ResultCard
               v-if="activeResult != null"
               :content="current.content[activeResult]"
-              @close="closeCard"
+              @close="activeResult = null"
               @fav="updateFavorites"
               class="full-size"
             />
@@ -43,6 +43,16 @@
           </Alert>
         </div>
       </transition>
+      <footer>
+        <div class="left">
+          <a class="logo" href="https://amuvee.de/">amuvee<span>.</span></a>
+          <nav>
+            <a href="https://amuvee.de/impressum">Impressum</a> |
+            <a href="https://amuvee.de/datenschutz">Datenschutz</a> |
+            <a @click="removeFavorites">Cookies löschen</a>
+          </nav>
+        </div>
+      </footer>
     </main>
   </div>
 </template>
@@ -54,12 +64,10 @@ import SharingCard from "@/components/SharingCard.vue";
 import CathegoryNav from "@/components/CathegoryNav.vue";
 import ResultCard from "@/components/ResultCard.vue";
 import ResultHeader from "@/components/ResultHeader.vue";
-import OverlayScrollbars from "overlayscrollbars";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 import axios from "axios";
 import { FinderStatus } from "@/shared/status";
 import { Cathegory } from "@/shared/cathegory";
-import { states } from "../shared/helpers";
 import CookieCard from "@/components/CookieCard.vue";
 import Alert from "@/components/Alert.vue";
 
@@ -113,15 +121,18 @@ export default class Results extends Vue {
       );
     }
     const favs: any = this.$cookies.get("favorites");
-    const dateInPast = (secondDate: Date) =>
-      new Date().setHours(0, 0, 0, 0) > secondDate.setHours(0, 0, 0, 0);
     if (favs && favs.allowed) {
       // TODO: expires
       this.favorites = favs.value;
       this.cookiesEnabled = true;
     }
   }
-  updateFavorites(card: { id: number; activ: boolean }) {
+  removeFavorites(): void {
+    this.cookiesEnabled = false;
+    this.$cookies.remove("favorites");
+    return;
+  }
+  updateFavorites(card: { id: number; activ: boolean }): void {
     const expires = new Date();
     expires.setDate(new Date().getDate() + 356);
     if (card.activ) {
@@ -144,7 +155,7 @@ export default class Results extends Vue {
       this.cookieOpen = true;
     }
   }
-  enableFavorites(allow: boolean) {
+  enableFavorites(allow: boolean): void {
     this.cookieOpen = false;
     this.cookiesEnabled = allow;
     const expires = new Date();
@@ -162,7 +173,7 @@ export default class Results extends Vue {
       });
     }
   }
-  getResultFilters = (cathegory: number | null) => {
+  getResultFilters(cathegory: number | null): string {
     let f = '{"_and": [';
     // filter+='{"min_age": {"_eq": 0}}';
     // filter+='{"_or": [{"min_age": {"_eq": 0}}, {"min_age": {"_eq": "_nnull"}}]}'
@@ -184,15 +195,15 @@ export default class Results extends Vue {
     f += filters.join(",");
     f += "]}";
     return f;
-  };
+  }
 
   get cathegoriesLoaded(): boolean {
     return Object.keys(this.cathegories).length > 0;
   }
 
-  async loadCathegoryResults() {
+  async loadCathegoryResults(): Promise<void> {
     const status: FinderStatus = this.$store.getters.answers;
-    // TODO: repeat  favorite sorting
+    // TODO: repeat favorite sorting
     if (this.current && !this.current.allreadyRequested) {
       const request =
         this.url +
@@ -206,7 +217,8 @@ export default class Results extends Vue {
         result.weight = result.type.weight + result.isFavorite * 1000;
         return result;
       });
-      results = results.filter(
+      results = results
+        .filter(
           (result: any) =>
             status.lifeSituation.getResultFilter(result) &&
             status.children.getResultFilter(result) &&
@@ -218,7 +230,7 @@ export default class Results extends Vue {
         .sort((a: any, b: any) => {
           return b.weight - a.weight;
         });
-        
+
       this.$store.commit("setCategoryResults", {
         id: this.current.id,
         results,
@@ -228,19 +240,10 @@ export default class Results extends Vue {
     }
   }
   async mounted(): Promise<void> {
-    //this.url+"result?limit=0&filter=&meta=filter_count"
-
-    // https://docs.directus.io/reference/query/
-    // https://docs.directus.io/configuration/filter-rules/
-    const status: FinderStatus = this.$store.getters.answers;
-
     this.$store.commit(
       "initResultTypes",
       (await axios.get(this.url + "result_type")).data.data
     );
-    // }
-    // (await axios.get(this.url + "category?limit=0&meta=filter_count&filter"+this.getResultFilters(element.id))).data.data;
-
     const cathegories = (await axios.get(this.url + "category")).data.data;
     this.$store.commit("initCathegories", cathegories);
 
@@ -255,28 +258,14 @@ export default class Results extends Vue {
       ).data.meta.filter_count;
       this.$store.commit("setNumberOfResults", { id: cat.id, nor });
     }
-    // this.$store.commit(
-    //   "saveResults",
-    //   (
-    //     await axios.get(
-    //       this.url+"result?fields=*,has_job.joblist_id,has_mariage_type.,actions.*.*.*&filter="+filter
-    //     )
-    //   ).data.data
-    // );
 
     this.cathegories = this.$store.getters.cathegories;
     this.activeCathegory = 1;
     this.loadCathegoryResults();
   }
-  changeCathegory(index: number) {
+  changeCathegory(index: number): void {
     this.activeCathegory = index;
     this.loadCathegoryResults();
-  }
-  closeCard() {
-    this.activeResult = null;
-  }
-  openCard(index: number) {
-    this.activeResult = index;
   }
 }
 </script>
@@ -338,7 +327,7 @@ export default class Results extends Vue {
       }
     }
     #full-screen-result-card {
-  z-index: 10;
+      z-index: 10;
       position: fixed;
       top: 0;
       left: 0;
@@ -346,6 +335,46 @@ export default class Results extends Vue {
       height: 100vh;
       width: 100vw;
       box-sizing: border-box;
+    }
+    footer {
+      border-top: 1px solid var(--dark-primary);
+      padding: 28px 0 32px 0;
+      width: 100%;
+      margin-top: 4rem;
+      text-align: center;
+      display: flex;
+      div.left {
+        display: flex;
+        flex-direction: column;
+        align-items: baseline;
+        .logo {
+          margin-bottom: 1rem;
+        }
+        a:hover{
+          color: var(--accent-green);
+        }
+        a:active{
+          color: var(--accent-red);
+        }
+        nav,
+        nav a {
+          color: var(--dark-primary);
+          font-weight: 600;
+          text-decoration: none;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .logo {
+    font-family: "Playfair Display";
+    text-decoration: none;
+    color: var(--dark-primary);
+    font-size: 40px;
+    font-weight: 700;
+    padding-bottom: 8px;
+    span {
+      color: var(--accent-red);
     }
   }
 }
