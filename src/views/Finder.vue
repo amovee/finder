@@ -252,16 +252,23 @@ export default class Finder extends Vue {
         h2 {
           font-family: "Playfair Display";
           color: var(--accent-green);
-          font-size: 3rem;
+          font-size: 2.5rem;
           margin-top: 0;
           margin-bottom: 3rem;
+          @media (min-width: 512px) {
+            font-size: 3rem;
+          }
         }
 
         h3 {
-          font-size: 22px;
+          font-size: 18px;
           font-weight: 700;
-          line-height: 2rem;
+          line-height: 22px;
           margin: 0 0 20px 0;
+          @media (min-width: 512px) {
+            font-size: 22px;
+            line-height: 2rem;
+          }
         }
 
         footer {
@@ -306,6 +313,7 @@ button.btn {
 }
 .side-nav {
   position: fixed;
+  z-index: 10;
   top: 0;
   right: 0;
   padding: 24px;
