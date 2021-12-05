@@ -65,8 +65,8 @@ export class ChildrenStatus implements Status {
   public getQueryFilters(): string[] {
     const filters: string[] = [];
     if (this.numberOfChildren) {
-      filters.push(`{"_or": [{"min_children_count": {"_null":true}}, {"min_children_count": {"_lt": ${this.numberOfChildren}}}]}`)
-      filters.push(`{"_or": [{"max_children_count": {"_null":true}}, {"max_children_count": {"_gt": ${this.numberOfChildren}}}]}`)
+      filters.push(`{"_or":[{"min_children_count":{"_null":true}},{"min_children_count":{"_lte":${this.numberOfChildren}}}]}`)
+      filters.push(`{"_or":[{"max_children_count":{"_null":true}},{"max_children_count":{"_gte":${this.numberOfChildren}}}]}`)
     }
     if (!this.pregnant) {
       filters.push(`{"is_pregnant":{"_eq":false}}`)
@@ -216,8 +216,8 @@ export class HousingSituationStatus implements Status {
   public getQueryFilters(): string[] {
     const filters: string[] = [];
     if (this.costs) {
-      filters.push(`{"_or": [{"min_rent": {"_null":true}}, {"min_rent": {"_lt": ${this.costs}}}]}`)
-      filters.push(`{"_or": [{"max_rent": {"_null":true}}, {"max_rent": {"_gt": ${this.costs}}}]}`)
+      filters.push(`{"_or":[{"min_rent":{"_null":true}},{"min_rent":{"_lte":${this.costs}}}]}`)
+      filters.push(`{"_or":[{"max_rent":{"_null":true}},{"max_rent":{"_gte":${this.costs}}}]}`)
     }
     return filters;
   }
@@ -464,9 +464,8 @@ export class IncomeStatus implements Status {
       if (this.rentalIncomeExists == true && this.rentalIncome != null) {
         money += this.rentalIncome;
       }
-      filters.push(`{"_or": [{"min_income": {"_null":true}}, {"min_income": {"_lt": ${money}}}]}`)
-      filters.push(`{"_or": [{"max_income": {"_null":true}}, {"max_income": {"_gt": ${money}}}]}`)
-
+      filters.push(`{"_or":[{"min_income":{"_null":true}},{"min_income":{"_lte":${money}}}]}`);
+      filters.push(`{"_or":[{"max_income":{"_null":true}},{"max_income":{"_gte":${money}}}]}`);
     }
     return filters;
   }

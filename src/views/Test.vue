@@ -2,18 +2,23 @@
   <div id="test">
     <nav>
       <label for="category">Kategorie</label>
-      <select id="category"  v-model.number="category">
-        <option v-for="(cat, i) in cathegories" :key="i" :value="cat.id">{{cat.name}}</option>
+      <select id="category" v-model.number="category">
+        <option v-for="(cat, i) in cathegories" :key="i" :value="cat.id">
+          {{ cat.name }}
+        </option>
       </select>
       <label for="start">Start:</label>
       <input type="number" id="start" v-model.number="start" min="0" />
       <label for="end">max Anzahl:</label>
       <input type="number" id="end" v-model.number="end" min="0" max="100" />
       <button @click="reload">load</button>
-      <p>Anzahl Ergebnisse: {{results.length}} von {{nor}} in dieser Kategorie</p>
+      <p>
+        Anzahl Ergebnisse: {{ results.length }} von {{ nor }} in dieser
+        Kategorie
+      </p>
     </nav>
     <main>
-      <Card v-for="(result, i) in results" :key="i+100" :config="result" />
+      <Card v-for="(result, i) in results" :key="i + 100" :config="result" />
     </main>
   </div>
 </template>
@@ -26,9 +31,8 @@ import axios from "axios";
 import { FinderStatus } from "@/shared/status";
 
 class A {
-  public print():void{
+  public print(): void {
     console.log(123);
-    
   }
 }
 
@@ -50,8 +54,30 @@ export default class Test extends Vue {
   message = "";
   $router: any;
   async mounted() {
-    console.log([A]);
+    // console.log('TEST: ');
     
+    // const filters: string[] = [
+    //   `{"_or":[{"end_date":{"_null":true}},{"end_date":{"_gt":"$NOW"}}]}`,
+    //   `{"_or":[{"min_children_count":{"_null":true}}, {"min_children_count":{"_lte":3}}]}`,
+    //   `{"_or":[{"max_children_count":{"_null":true}}, {"max_children_count":{"_gte":3}}]}`,
+    //   `{"_or":[{"min_rent":{"_null":false}},{"min_rent":{"_lte":650}}]}`,
+    //   `{"_or":[{"max_rent":{"_null":false}},{"max_rent":{"_gte":650}}]}`,
+    //   `{"_or":[{"min_income":{"_null":false}},{"min_income":{"_lte":3004}}]}`,
+    //   `{"_or":[{"max_income":{"_null":false}},{"max_income":{"_gte":3004}}]}`,
+    //   `{"is_pregnant":{"_eq":false}}`,
+    //   `{"category":{"_eq":6}}`,
+    // ];
+    // const a = await axios.get(
+    //   this.url +
+    //     `result?fields=*,has_job.joblist_id,has_mariage_type.*,type.*&offset=0&limit=100&filter={"_and":[${filters.join(
+    //       ","
+    //     )}]}`
+    // );
+    // console.log('->',a.data.data.length);
+    // a.data.data.forEach((e: any) => {
+    //   console.log(e.min_children_count, e.max_children_count);
+    // });
+
     this.cathegories = (await axios.get(this.url + "category")).data.data;
     await this.reloadCard();
   }
@@ -66,10 +92,11 @@ export default class Test extends Vue {
       this.results = [];
     }
     this.nor = (
-        await axios.get(
-          this.url + `result?fields=*&limit=0&meta=filter_count&filter={"category": {"_eq": ${this.category}}}`
-        )
-      ).data.meta.filter_count;
+      await axios.get(
+        this.url +
+          `result?fields=*&limit=0&meta=filter_count&filter={"category": {"_eq": ${this.category}}}`
+      )
+    ).data.meta.filter_count;
   }
   async reload() {
     this.message = "";
