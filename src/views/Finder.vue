@@ -252,9 +252,12 @@ export default class Finder extends Vue {
         h2 {
           font-family: "Playfair Display";
           color: var(--accent-green);
-          font-size: 2.5rem;
+          font-size: 2rem;
           margin-top: 0;
           margin-bottom: 3rem;
+          @media (min-width: 400px) {
+            font-size: 2.5rem;
+          }
           @media (min-width: 512px) {
             font-size: 3rem;
           }

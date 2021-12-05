@@ -94,7 +94,7 @@
       </transition>
       <div class="group">
         <h3>
-          Hast du Gewalterfahrungen in deiner Beziehunggemacht, sei es
+          Hast du Gewalterfahrungen in deiner Beziehung gemacht, sei es
           psychisch, physisch oder finanziell?
         </h3>
         <div class="group horizontal">

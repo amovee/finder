@@ -228,6 +228,10 @@ export default class ResultCard extends Vue {
     & > article {
       line-height: 24px;
       font-size: 1rem;
+      a {
+        color: var(--accent-red);
+        cursor: pointer;
+      }
     }
   }
 }
