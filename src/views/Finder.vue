@@ -278,6 +278,10 @@ export default class Finder extends Vue {
           display: flex;
           gap: 1rem;
           justify-content: center;
+          flex-direction: column;
+          @media (min-width: 350px) {
+            flex-direction: row;
+          }
           @media (min-width: 512px) {
             justify-content: space-between;
           }
