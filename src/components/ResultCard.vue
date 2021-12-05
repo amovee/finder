@@ -7,9 +7,12 @@
           <button class="btn" @click="close">
             <img src="@/assets/close.svg" /><span class="text">Schließen</span>
           </button>
-          <button class="btn" @click="fav()" :class="content.isFavorite ? 'fav' : ''">
-            <Heart :class="content.isFavorite ? 'fav' : ''" /><span
-              class="text"
+          <button
+            class="btn"
+            @click="fav()"
+            :class="content.isFavorite ? 'fav' : ''"
+          >
+            <Heart :class="content.isFavorite ? 'fav' : ''" /><span class="text"
               >Merken</span
             >
           </button>
@@ -34,6 +37,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 import Heart from "./Heart.vue";
+import axios from "axios";
 
 @Component({
   components: {
@@ -47,6 +51,18 @@ export default class ResultCard extends Vue {
   fav(): { id: number; activ: boolean } {
     this.content.isFavorite = !this.content.isFavorite;
     return { id: this.content.id, activ: this.content.isFavorite };
+  }
+  async mounted() {
+    if(!this.content.actions || this.content.actions.length == 0){
+      this.content.actions = (
+        await axios.get(
+          "https://afq-t32f44ncfa-ey.a.run.app/items/result?fields=actions.*.*&filter=" +
+            '{"id": {"_eq": ' +
+            this.content.id +
+            "}}"
+        )
+      ).data.data[0].actions;
+    }
   }
 
   get actions() {

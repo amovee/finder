@@ -47,7 +47,7 @@ class ResultsService extends VuexModule {
       if(result.id in this._cathegories){
         this._cathegories[result.id].content.push({
             id: result.id,
-            actions: result.actions,
+            actions: null,//result.actions,
             description: result.description,
             end_date: result.end_date,
             start_date: result.start_date,
