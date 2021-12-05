@@ -122,6 +122,7 @@ export default class Card extends Vue {
     margin: 0 0 8px 0;
     line-height: 2rem;
     transition: 500ms color ease;
+    text-align: center;
   }
   .type {
     /* background light green */
