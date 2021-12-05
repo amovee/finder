@@ -215,8 +215,6 @@ export default class Results extends Vue {
         this.numberOfAllResults +
         "&filter=" +
         this.getResultFilters(this.current.id);
-      console.log(request);
-      
       let results = (await axios.get(request)).data.data;
       results = results.map((result: any) => {
         result.actions =[];
@@ -237,7 +235,7 @@ export default class Results extends Vue {
         .sort((a: any, b: any) => {
           return b.weight - a.weight;
         });
-      
+        
 
       this.$store.commit("setCategoryResults", {
         id: this.current.id,

@@ -72,7 +72,7 @@ export default class CathegoryNav extends Vue {
     window.removeEventListener("resize", this.onResize, true); 
   }
   onResize() {
-    this.large = this.$refs.nav.clientWidth >= 1200;
+    this.large = this.$refs.nav.clientWidth >= 1390;
   }
   @Emit("change")
   onChange(index: number) {
@@ -144,7 +144,7 @@ export default class CathegoryNav extends Vue {
     gap: 8px;
     padding: 12px 12px 11px 28px;
     font-size: 18px;
-    border: 2px solid #fff;
+    border: 2px solid var(--bright-primary);
     span {
       display: flex;
       align-items: center;

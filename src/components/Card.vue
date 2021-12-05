@@ -9,7 +9,7 @@
       <!-- <img v-if="config.isFavorite" src="@/assets/favorite-active.svg" /> -->
       <!-- <img v-if="!config.isFavorite" src="@/assets/favorite-inactive.svg" /> -->
     </button>
-    <h5>{{ config.name }}</h5>
+    <h5 v-html="config.name"></h5>
     <div class="type" v-if="config.type">{{ config.type.name }}</div>
     <div class="date" v-if="date">
       <img src="@/assets/date.svg" /> {{ date }}
@@ -98,10 +98,10 @@ export default class Card extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #ffffff;
+  background: var(--bright-primary);
 
   /* accent green */
-  border: 1px solid #009eb3;
+  border: 1px solid var(--accent-green);
   box-sizing: border-box;
   transition: 500ms border ease, 500ms outline ease, 500ms padding ease;
   padding: 28px 1rem;
@@ -125,7 +125,7 @@ export default class Card extends Vue {
   }
   .type {
     /* background light green */
-    background: #e4f2f2;
+    background: var(--light-green);
     border-radius: 2px;
 
     font-weight: 600;

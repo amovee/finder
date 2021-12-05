@@ -70,7 +70,7 @@ export default class SharingCard extends Vue {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: #e4f2f2;
+      background: var(--light-green);
       padding: 4rem 3rem;
       h1 {
         font-family: "Playfair Display";
@@ -116,7 +116,7 @@ export default class SharingCard extends Vue {
           font-weight: 700;
           line-height: 24px;
           text-align: center;
-          background: #ffffff;
+          background: var(--bright-primary);
           border: 1px solid #e6e4e1;
           color: #aaadb3;
           line-height: 24px;

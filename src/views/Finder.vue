@@ -288,14 +288,14 @@ button.btn {
   font-size: 18px;
   padding: 1rem 40px;
   border-radius: 36px;
-  background: #fff;
+  background: var(--bright-primary);
   outline: 1px #e5e4e1 solid;
   border: none;
   cursor: pointer;
   font-weight: 700;
 
   &[disabled] {
-    color: #aaadb2;
+    color: var(--gray);
     background: #f7f7f7;
     cursor: default;
   }
@@ -305,7 +305,7 @@ button.btn {
     border-color: var(--accent-red);
     background: var(--accent-red);
     &[disabled] {
-      color: #aaadb2;
+      color: var(--gray);
       background: #f7f7f7;
       cursor: default;
     }
@@ -336,7 +336,7 @@ button.btn {
         display: block;
         height: 4px;
         width: 100%;
-        background: #fff;
+        background: var(--bright-primary);
         border-radius: 2px;
         transition: 400ms ease transform, 400ms ease top;
         &:nth-child(1) {

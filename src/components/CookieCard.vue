@@ -41,7 +41,7 @@ export default class CookieCard extends Vue {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: #e4f2f2;
+      background: var(--light-green);
       padding: 4rem 3rem;
       h1 {
         font-family: "Playfair Display";
