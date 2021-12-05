@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Finder from '../views/Finder.vue'
 import Results from '../views/Results.vue'
+import Test from '../views/Test.vue'
 
 Vue.use(VueRouter)
 
@@ -15,7 +16,11 @@ const routes: Array<RouteConfig> = [
     path: '/results',
     name: 'Results',
     component: Results
-    
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: Test
   },
 ]
 
