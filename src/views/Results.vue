@@ -14,6 +14,7 @@
     <main>
       <CathegoryNav @change="changeCathegory" />
       <p v-html="current.description" />
+      <Loadbar v-if="duringLoad"/>
       <div class="content">
         <div class="cards" v-if="results">
           <Card
@@ -70,10 +71,12 @@ import { FinderStatus } from "@/shared/status";
 import { Cathegory } from "@/shared/cathegory";
 import CookieCard from "@/components/CookieCard.vue";
 import Alert from "@/components/Alert.vue";
+import Loadbar from "@/components/Loadbar.vue";
 
 @Component({
   components: {
     ResultHeader,
+    Loadbar,
     SharingCard,
     Card,
     ResultCard,
@@ -93,6 +96,7 @@ export default class Results extends Vue {
   cookieOpen = false;
   favorites: number[] = [];
   cookiesEnabled = false;
+  duringLoad = true;
   get current(): Cathegory {
     return this.cathegories[this.activeCathegory];
   }
@@ -207,12 +211,15 @@ export default class Results extends Vue {
     if (this.current && !this.current.allreadyRequested) {
       const request =
         this.url +
-        "result?fields=*,has_job.joblist_id,has_mariage_type.*,type.*,actions.*.*.*&limit=" +
+        "result?fields=*,has_job.joblist_id,has_mariage_type.*,type.*&limit=" +
         this.numberOfAllResults +
         "&filter=" +
         this.getResultFilters(this.current.id);
+      console.log(request);
+      
       let results = (await axios.get(request)).data.data;
       results = results.map((result: any) => {
+        result.actions =[];
         result.isFavorite = this.favorites.includes(result.id);
         result.weight = result.type.weight + result.isFavorite * 1000;
         return result;
@@ -230,6 +237,7 @@ export default class Results extends Vue {
         .sort((a: any, b: any) => {
           return b.weight - a.weight;
         });
+      
 
       this.$store.commit("setCategoryResults", {
         id: this.current.id,
@@ -237,6 +245,7 @@ export default class Results extends Vue {
       });
       this.results = results;
       this.current.allreadyRequested = true;
+      this.duringLoad = false;
     }
   }
   async mounted(): Promise<void> {
@@ -327,7 +336,7 @@ export default class Results extends Vue {
       }
     }
     #full-screen-result-card {
-      z-index: 10;
+      z-index: 200;
       position: fixed;
       top: 0;
       left: 0;
