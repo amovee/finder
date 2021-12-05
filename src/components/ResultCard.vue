@@ -53,7 +53,7 @@ export default class ResultCard extends Vue {
     return { id: this.content.id, activ: this.content.isFavorite };
   }
   async mounted() {
-    if(!this.content.actions || this.content.actions.length == 0){
+    if (!this.content.actions || this.content.actions.length == 0) {
       this.content.actions = (
         await axios.get(
           "https://afq-t32f44ncfa-ey.a.run.app/items/result?fields=actions.*.*&filter=" +
@@ -91,7 +91,7 @@ export default class ResultCard extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss">
 .result-card {
   display: flex;
   flex-direction: column;
