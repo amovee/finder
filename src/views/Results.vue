@@ -14,7 +14,7 @@
     <main>
       <CathegoryNav @change="changeCathegory" />
       <p v-html="current.description" />
-      <Loadbar v-if="duringLoad"/>
+      <Loadbar v-if="duringLoad" />
       <div class="content">
         <div class="cards" v-if="results">
           <Card
@@ -217,7 +217,7 @@ export default class Results extends Vue {
         this.getResultFilters(this.current.id);
       let results = (await axios.get(request)).data.data;
       results = results.map((result: any) => {
-        result.actions =[];
+        result.actions = [];
         result.isFavorite = this.favorites.includes(result.id);
         result.weight = result.type.weight + result.isFavorite * 1000;
         return result;
@@ -235,7 +235,6 @@ export default class Results extends Vue {
         .sort((a: any, b: any) => {
           return b.weight - a.weight;
         });
-        
 
       this.$store.commit("setCategoryResults", {
         id: this.current.id,
@@ -340,6 +339,7 @@ export default class Results extends Vue {
       left: 0;
       // overflow-y: hi;
       height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
       width: 100vw;
       box-sizing: border-box;
     }
@@ -357,10 +357,10 @@ export default class Results extends Vue {
         .logo {
           margin-bottom: 1rem;
         }
-        a:hover{
+        a:hover {
           color: var(--accent-green);
         }
-        a:active{
+        a:active {
           color: var(--accent-red);
         }
         nav,

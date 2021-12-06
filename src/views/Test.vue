@@ -55,7 +55,7 @@ export default class Test extends Vue {
   $router: any;
   async mounted() {
     // console.log('TEST: ');
-    
+
     // const filters: string[] = [
     //   `{"_or":[{"end_date":{"_null":true}},{"end_date":{"_gt":"$NOW"}}]}`,
     //   `{"_or":[{"min_children_count":{"_null":true}}, {"min_children_count":{"_lte":3}}]}`,
@@ -109,6 +109,7 @@ export default class Test extends Vue {
   padding-top: 120px;
   width: 100vw;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
   align-items: center;

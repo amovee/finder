@@ -1,35 +1,38 @@
 <template>
   <div id="app">
-    <OverlayScrollbarsComponent
-      class="view"
-      id="scroll"
-      :extensions="[]"
-    >
-    <router-view />
+    <OverlayScrollbarsComponent class="view" id="scroll" :extensions="[]">
+      <router-view />
     </OverlayScrollbarsComponent>
   </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
-
-
+import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 
 @Component({
   components: {
-    OverlayScrollbarsComponent
-  }
+    OverlayScrollbarsComponent,
+  },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  mounted() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    window.addEventListener("resize", () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
+  }
+}
 </script>
 <style lang="scss">
 @import "./normalize.scss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap");
 body {
   .view {
-
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
   }
   font-family: "Nunito Sans";
   margin: 0;
@@ -51,10 +54,10 @@ body {
   --dark-green: #4b99a3;
   --dark-red: #fa8373;
   --dark-yellow: #fac673;
-  --gray: #AAADB2;
-  
+  --gray: #aaadb2;
+
   color: var(--dark-primary);
-  
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity 0.2s;

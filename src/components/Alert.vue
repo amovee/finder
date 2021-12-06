@@ -42,6 +42,7 @@ export default class Alert extends Vue {
     padding: 0rem;
     box-sizing: border-box;
     min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
     width: 100vw;
     
     @media (min-width: 800px) {

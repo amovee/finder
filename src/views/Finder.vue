@@ -196,6 +196,7 @@ export default class Finder extends Vue {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 
   @media (min-width: 1024px) {
     display: flex;
@@ -208,6 +209,7 @@ export default class Finder extends Vue {
     top: 0;
     left: -380px;
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     width: 380px;
     transition: left 400ms ease;
     &.open {
@@ -238,6 +240,7 @@ export default class Finder extends Vue {
         justify-content: space-between;
         padding: 2rem 1rem;
         min-height: 100vh;
+        min-height: calc(var(--vh, 1vh) * 100);
         > * {
           width: 100%;
           max-width: 700px;
