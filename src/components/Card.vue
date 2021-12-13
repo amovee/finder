@@ -14,7 +14,7 @@
     <div class="date" v-if="date">
       <img src="@/assets/date.svg" /> {{ date }}
     </div>
-    <p v-html="config.short_description" />
+    <p class="description" v-html="config.short_description" />
   </div>
 </template>
 
@@ -88,7 +88,7 @@ export default class Card extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss">
 .card {
   position: relative;
   cursor: pointer;
@@ -159,12 +159,15 @@ export default class Card extends Vue {
     letter-spacing: 0.02em;
     padding: 5px 12px;
   }
-  p {
+  p.description {
     font-size: 1rem;
     line-height: 24px;
     margin: 8px 0;
     color: var(--body-text);
     font-weight: 400;
+    p {
+      margin: 0;
+    }
   }
   .btn.none {
     outline: none;
