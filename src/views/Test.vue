@@ -54,37 +54,13 @@ export default class Test extends Vue {
   message = "";
   $router: any;
   async mounted() {
-    // console.log('TEST: ');
-
-    // const filters: string[] = [
-    //   `{"_or":[{"end_date":{"_null":true}},{"end_date":{"_gt":"$NOW"}}]}`,
-    //   `{"_or":[{"min_children_count":{"_null":true}}, {"min_children_count":{"_lte":3}}]}`,
-    //   `{"_or":[{"max_children_count":{"_null":true}}, {"max_children_count":{"_gte":3}}]}`,
-    //   `{"_or":[{"min_rent":{"_null":false}},{"min_rent":{"_lte":650}}]}`,
-    //   `{"_or":[{"max_rent":{"_null":false}},{"max_rent":{"_gte":650}}]}`,
-    //   `{"_or":[{"min_income":{"_null":false}},{"min_income":{"_lte":3004}}]}`,
-    //   `{"_or":[{"max_income":{"_null":false}},{"max_income":{"_gte":3004}}]}`,
-    //   `{"is_pregnant":{"_eq":false}}`,
-    //   `{"category":{"_eq":6}}`,
-    // ];
-    // const a = await axios.get(
-    //   this.url +
-    //     `result?fields=*,has_job.joblist_id,has_mariage_type.*,type.*&offset=0&limit=100&filter={"_and":[${filters.join(
-    //       ","
-    //     )}]}`
-    // );
-    // console.log('->',a.data.data.length);
-    // a.data.data.forEach((e: any) => {
-    //   console.log(e.min_children_count, e.max_children_count);
-    // });
-
     this.cathegories = (await axios.get(this.url + "category")).data.data;
     await this.reloadCard();
   }
   async reloadCard() {
     const request =
       this.url +
-      `result?fields=*,has_job.joblist_id,has_mariage_type.*,type.*&offset=${this.start}&limit=${this.end}&filter={"category": {"_eq": ${this.category}}}`;
+      `result?fields=*,type.*&offset=${this.start}&limit=${this.end}&filter={"category": {"_eq": ${this.category}}}`;
     let results = (await axios.get(request)).data.data;
     if (results[0]) {
       this.results = results;
