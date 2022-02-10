@@ -196,6 +196,7 @@ export default class Results extends Vue {
     if (cathegory != null) {
       filters.push(`{"category": {"_eq": ${cathegory}}}`);
     }
+    filters.push('{"status": {"_eq": "published"}}')
     f += filters.join(",");
     f += "]}";
     return f;
