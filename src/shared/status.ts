@@ -224,8 +224,15 @@ export class HousingSituationStatus implements Status {
 
   public getResultFilter(result: any): boolean {
     let postalCodesFilter = false;
-    if (result.postalcodes != null) {
-      result.postalcodes.split(",").forEach((codes: any) => {
+    let code = null;
+    if(result.zip) {
+      // TODO: only one replaceAll with regex
+      code = result.zip.replaceAll("\n","").replaceAll(" ","");
+    } else if(result.postalcodes){
+      code = result.postalcodes.replaceAll("\n","").replaceAll(" ","");
+    }
+    if (code != null) {
+      code.split(",").forEach((codes: any) => {
         if (!this.place || this.place.startsWith(codes)) {
           postalCodesFilter = true;
         }
