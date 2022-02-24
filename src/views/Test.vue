@@ -18,65 +18,86 @@
       </p>
     </nav>
     <main>
-      <Card v-for="(result, i) in results" :key="i + 100" :config="result" />
+      <Card
+        v-for="(result, i) in results"
+        :key="i + 100"
+        :config="result"
+        @open="activeResult = i"
+      />
+      <transition name="fade">
+        <div
+          id="full-screen-result-card"
+          v-if="activeResult != null"
+        >
+          <Alert>
+            <ResultCard
+              v-if="activeResult != null"
+              :content="results[activeResult]"
+              @close="activeResult = null"
+              class="full-size"
+            />
+          </Alert>
+        </div>
+      </transition>
     </main>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Card from "@/components/Card.vue";
-import ResultCard from "@/components/ResultCard.vue";
-import axios from "axios";
-import { FinderStatus } from "@/shared/status";
-
-class A {
-  public print(): void {
-    console.log(123);
-  }
-}
+import { Component, Vue } from 'vue-property-decorator'
+import Card from '@/components/Card.vue'
+import ResultCard from '@/components/ResultCard.vue'
+import axios from 'axios'
+import Alert from "@/components/Alert.vue";
 
 @Component({
   components: {
     Card,
     ResultCard,
+    Alert
   },
 })
 export default class Test extends Vue {
-  cathegories = [];
-  category = 1;
-  nor = 0;
-  start = 0;
-  end = 2;
-  id?: number | null = null;
-  url = "https://afq-t32f44ncfa-ey.a.run.app/items/";
-  results: any[] = [];
-  message = "";
-  $router: any;
+  cathegories = []
+  category = 1
+  nor = 0
+  start = 0
+  end = 2
+  activeResult: any = null
+  id?: number | null = null
+  url = 'https://afq-t32f44ncfa-ey.a.run.app/items/'
+  results: any[] = []
+  message = ''
+  $router: any
   async mounted() {
-    this.cathegories = (await axios.get(this.url + "category")).data.data;
-    await this.reloadCard();
+    this.cathegories = (await axios.get(this.url + 'category')).data.data
+    await this.reloadCard()
   }
   async reloadCard() {
     const request =
       this.url +
-      `result?fields=*,type.*&offset=${this.start}&limit=${this.end}&filter={"category": {"_eq": ${this.category}}}`;
-    let results = (await axios.get(request)).data.data;
+      `result?fields=*,type.*&offset=${this.start}&limit=${this.end}&filter={"category": {"_eq": ${this.category}}}`
+    let results = (await axios.get(request)).data.data
     if (results[0]) {
-      this.results = results;
+      this.results = results
+      this.results = results.map((result: any) => {
+        result.actions = [];
+        result.weight = result.type.weight + result.isFavorite * 1000;
+        return result;
+      });
     } else {
-      this.results = [];
+      this.results = []
     }
     this.nor = (
       await axios.get(
         this.url +
-          `result?fields=*&limit=0&meta=filter_count&filter={"category": {"_eq": ${this.category}}}`
+          `result?fields=*&limit=0&meta=filter_count&filter={"category": {"_eq": ${this.category}}}`,
       )
-    ).data.meta.filter_count;
+    ).data.meta.filter_count
   }
   async reload() {
-    this.message = "";
-    await this.reloadCard();
+    this.message = ''
+    await this.reloadCard()
   }
 }
 </script>
@@ -90,6 +111,17 @@ export default class Test extends Vue {
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  #full-screen-result-card {
+      z-index: 200;
+      position: fixed;
+      top: 0;
+      left: 0;
+      // overflow-y: hi;
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      width: 100vw;
+      box-sizing: border-box;
+    }
   main {
     width: 100vw;
     justify-content: center;
