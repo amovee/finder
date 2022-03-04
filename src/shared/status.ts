@@ -140,7 +140,6 @@ export class LifeSituationStatus implements Status {
     }
   }
   public getQueryFilters(): string[] {
-
     const filters: string[] = [];
     if (!this.violence) {
       filters.push(`{"victim_of_violence":{"_eq":false}}`)
@@ -353,7 +352,7 @@ export class WorkingStatus implements Status {
   public getQueryFilters(): string[] {
     return [];
   }
-  public getResultFilter(result: any): boolean {
+  public getResultFilter(result: any): boolean {    
     return result.has_job_related_situation == null || result.has_job_related_situation.length == 0
       ? true
       : result.has_job_related_situation

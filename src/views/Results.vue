@@ -189,9 +189,9 @@ export default class Results extends Vue {
     const filters: string[] = [
       `{"_or": [{"end_date": {"_null":true}}, {"end_date":{"_gt": "$NOW"}}]}`,
     ];
-
     filters.push(...status.children.getQueryFilters());
     filters.push(...status.housingSituation.getQueryFilters());
+    filters.push(...status.lifeSituation.getQueryFilters());
     filters.push(...status.income.getQueryFilters());
     if (cathegory != null) {
       filters.push(`{"category": {"_eq": ${cathegory}}}`);
@@ -212,7 +212,7 @@ export default class Results extends Vue {
     if (this.current && !this.current.allreadyRequested) {
       const request =
         this.url +
-        "result?fields=*,type.*&limit=" +
+        "result?fields=*,type.*,has_job_related_situation.*,relationship_types.*&limit=" +
         this.numberOfAllResults +
         "&filter=" +
         this.getResultFilters(this.current.id);
@@ -225,13 +225,14 @@ export default class Results extends Vue {
       });
       results = results
         .filter(
-          (result: any) =>
-            status.lifeSituation.getResultFilter(result) &&
+          (result: any) => {
+            return status.lifeSituation.getResultFilter(result) && //works
             status.children.getResultFilter(result) &&
             status.housingSituation.getResultFilter(result) &&
             status.insurance.getResultFilter(result) &&
             status.working.getResultFilter(result) &&
             status.income.getResultFilter(result)
+          }
         )
         .sort((a: any, b: any) => {
           return b.weight - a.weight;
