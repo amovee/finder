@@ -5,16 +5,16 @@
         <h2>{{ content.name }}</h2>
         <nav>
           <button class="btn" @click="close">
-            <img src="@/assets/close.svg" /><span class="text">Schließen</span>
+            <img src="@/assets/close.svg" />
+            <span class="text">Schließen</span>
           </button>
           <button
             class="btn"
             @click="fav()"
             :class="content.isFavorite ? 'fav' : ''"
           >
-            <Heart :class="content.isFavorite ? 'fav' : ''" /><span class="text"
-              >Merken</span
-            >
+            <Heart :class="content.isFavorite ? 'fav' : ''" />
+            <span class="text">Merken</span>
           </button>
         </nav>
       </header>
@@ -30,14 +30,34 @@
         </div>
       </div>
       <article v-html="content.description"></article>
+      <article class="location" v-if="locationLoaded">
+        <h2>Adresse</h2>
+        <address>
+          <h3>{{location.name}}</h3>
+          {{location.street_name}} {{location.house_nr}}
+          <br />
+          {{location.zip}} {{location.location_name}}
+          <br />
+          <p v-if="location.description">
+            {{location.description}}
+          </p>
+        </address>
+        <iframe
+          v-if="location.google_maps_link"
+          :src="location.google_maps_link"
+          style="border: 0;"
+          allowfullscreen=""
+          loading="lazy"
+        ></iframe>
+      </article>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from "vue-property-decorator";
-import Heart from "./Heart.vue";
-import axios from "axios";
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Heart from './Heart.vue'
+import axios from 'axios'
 
 @Component({
   components: {
@@ -45,23 +65,36 @@ import axios from "axios";
   },
 })
 export default class ResultCard extends Vue {
-  @Prop() content: any;
+  @Prop() content: any
+  location: any;
+  locationLoaded = false;
 
-  @Emit("fav")
+  @Emit('fav')
   fav(): { id: number; activ: boolean } {
-    this.content.isFavorite = !this.content.isFavorite;
-    return { id: this.content.id, activ: this.content.isFavorite };
+    this.content.isFavorite = !this.content.isFavorite
+    return { id: this.content.id, activ: this.content.isFavorite }
   }
   async mounted() {
     if (!this.content.actions || this.content.actions.length == 0) {
       this.content.actions = (
         await axios.get(
-          "https://afq-t32f44ncfa-ey.a.run.app/items/result?fields=actions.*.*&filter=" +
+          'https://afq-t32f44ncfa-ey.a.run.app/items/result?fields=actions.*.*&filter=' +
             '{"id": {"_eq": ' +
             this.content.id +
-            "}}"
+            '}}',
         )
-      ).data.data[0].actions;
+      ).data.data[0].actions
+    }
+    if (!this.location && this.content.location) {      
+      this.location = (
+        await axios.get(
+          'https://afq-t32f44ncfa-ey.a.run.app/items/location?&filter=' +
+            '{"id": {"_eq": ' +
+            this.content.location +
+            '}}',
+        )
+      ).data.data[0];
+        this.locationLoaded = true;
     }
   }
 
@@ -69,7 +102,7 @@ export default class ResultCard extends Vue {
     return this.content.actions
       .filter((action: any) => !!action && !!action.action_id)
       .map((action: any) => {
-        const a = action.action_id;
+        const a = action.action_id
         return {
           description: a.description,
           date: a.date,
@@ -79,13 +112,13 @@ export default class ResultCard extends Vue {
           name: a.name,
           sort: a.sort,
           type: a.type,
-        };
-      });
+        }
+      })
   }
 
-  @Emit("close")
+  @Emit('close')
   close() {
-    return;
+    return
   }
 }
 </script>
@@ -144,6 +177,18 @@ export default class ResultCard extends Vue {
       }
     }
   }
+  .location {
+    address {
+      text-align: left;
+      font-weight: 500;
+      font-style: normal;
+    }
+    iframe {
+      height: 100vh;
+      max-height: 500px;
+      width: 100%;
+    }
+  }
   .content {
     max-width: 700px;
     background: white;
@@ -157,7 +202,7 @@ export default class ResultCard extends Vue {
       align-items: center;
       margin-bottom: 4rem;
       h2 {
-        font-family: "Playfair Display";
+        font-family: 'Playfair Display';
         color: var(--accent-red);
         font-size: 40px;
         font-weight: 700;
