@@ -49,7 +49,7 @@
               <input
                 type="radio"
                 id="public_0"
-                value="0"
+                value="1"
                 name="public"
                 v-model.number="value.publicInsurances"
                 @change="onChange"
@@ -60,7 +60,7 @@
               <input
                 type="radio"
                 id="public_1"
-                value="1"
+                value="10"
                 name="public"
                 v-model.number="value.publicInsurances"
                 @change="onChange"
@@ -71,7 +71,7 @@
               <input
                 type="radio"
                 id="public_2"
-                value="2"
+                value="4"
                 name="public"
                 v-model.number="value.publicInsurances"
                 @change="onChange"
@@ -93,7 +93,7 @@
               <input
                 type="radio"
                 id="public_4"
-                value="4"
+                value="5"
                 name="public"
                 v-model.number="value.publicInsurances"
                 @change="onChange"
@@ -112,7 +112,7 @@
               <input
                 type="radio"
                 id="private_0"
-                value="0"
+                value="8"
                 name="private"
                 v-model.number="value.privateInsurances"
                 @change="onChange"
@@ -123,7 +123,7 @@
               <input
                 type="radio"
                 id="private_1"
-                value="1"
+                value="6"
                 name="private"
                 v-model.number="value.privateInsurances"
                 @change="onChange"
@@ -134,7 +134,7 @@
               <input
                 type="radio"
                 id="private_2"
-                value="2"
+                value="7"
                 name="private"
                 v-model.number="value.privateInsurances"
                 @change="onChange"
@@ -145,7 +145,7 @@
               <input
                 type="radio"
                 id="private_3"
-                value="3"
+                value="9"
                 name="private"
                 v-model.number="value.privateInsurances"
                 @change="onChange"
@@ -156,7 +156,7 @@
               <input
                 type="radio"
                 id="private_4"
-                value="4"
+                value="11"
                 name="private"
                 v-model.number="value.privateInsurances"
                 @change="onChange"

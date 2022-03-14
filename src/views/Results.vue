@@ -212,7 +212,7 @@ export default class Results extends Vue {
     if (this.current && !this.current.allreadyRequested) {
       const request =
         this.url +
-        "result?fields=*,type.*,has_relationship.*,has_job_related_situation.*,relationship_types.*&limit=" +
+        "result?fields=*,type.*,has_insurance.*,has_relationship.*,has_job_related_situation.*,relationship_types.*&limit=" +
         this.numberOfAllResults +
         "&filter=" +
         this.getResultFilters(this.current.id);

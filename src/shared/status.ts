@@ -290,6 +290,16 @@ export class InsuranceStatus implements Status {
   }
 
   public getResultFilter(result: any): boolean {
+    if(result.has_insurance == null || result.has_insurance.length == 0) {
+      return true;
+    } else {
+      const ids = result.has_insurance.map((r: any) => r.insurance_id);
+      switch (this.type) {
+        case 0: return ids.includes(this.publicInsurances)
+        case 1: return ids.includes(this.privateInsurances);
+        case 2: return false;
+      }
+    }
     return true;
     // has_insurance: []
   }
