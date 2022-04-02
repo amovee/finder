@@ -9,6 +9,34 @@ export interface Status {
   toJson(): any;
 }
 
+export class PrivacyStatus implements Status {
+  constructor(
+    public accept: boolean = false,
+    public isValid: boolean = false
+  ) { }
+  public toJson(): any {
+    return Object.assign({},
+      this.accept === null ? null : { ac: this.accept },
+      this.isValid === null ? null : { iV: this.isValid }
+    )
+  }
+
+  public static fromJson(json: any): PrivacyStatus {
+    return new PrivacyStatus(
+      json.ac != null ? json.ac : null,
+      json.iV != null ? json.iV : false
+    );
+  }
+  public updateValidity(): void {
+    this.isValid = this.accept;
+  }
+  public getQueryFilters(): string[] {
+    return [];
+  }
+  public getResultFilter(result: any): boolean {
+    return true;
+  }
+}
 export class ChildrenStatus implements Status {
   constructor(
     public alreadyChildren: boolean | null = null,
@@ -492,6 +520,7 @@ export class IncomeStatus implements Status {
 }
 export class FinderStatus {
   constructor(
+    public privacy: PrivacyStatus = new PrivacyStatus(),
     public children: ChildrenStatus = new ChildrenStatus(),
     public lifeSituation: LifeSituationStatus = new LifeSituationStatus(),
     public housingSituation: HousingSituationStatus = new HousingSituationStatus(),
@@ -504,6 +533,7 @@ export class FinderStatus {
 
   public static fromJson(json: any): FinderStatus {
     return new FinderStatus(
+      json.pr != null ? PrivacyStatus.fromJson(json.pr) : new PrivacyStatus(),
       json.ch != null ? ChildrenStatus.fromJson(json.ch) : new ChildrenStatus(),
       json.lS != null ? LifeSituationStatus.fromJson(json.lS) : new LifeSituationStatus(),
       json.hS != null ? HousingSituationStatus.fromJson(json.hS) : new HousingSituationStatus(),
@@ -516,6 +546,7 @@ export class FinderStatus {
 
   public toJson(): any {
     return {
+      pr: this.privacy.toJson(),
       ch: this.children.toJson(),
       lS: this.lifeSituation.toJson(),
       hS: this.housingSituation.toJson(),
@@ -526,7 +557,8 @@ export class FinderStatus {
     }
   }
   updateValidity(): void {
-    this.isValid = this.children.isValid &&
+    this.isValid = this.privacy.isValid &&
+      this.children.isValid &&
       this.lifeSituation.isValid &&
       this.housingSituation.isValid &&
       this.insurance.isValid &&
