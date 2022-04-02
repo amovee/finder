@@ -4,10 +4,11 @@
     <div class="title">
       <h1>Deine Resultate</h1>
       <div class="subtitle">
-        <span class="green">ca. {{ numberOfAllResults }} Angebote</span> in
-        <span class="red"
-          >{{ Object.keys(cathegories).length }} Kategorien</span
-        >
+        <span class="green">ca. {{ numberOfAllResults }} Angebote</span>
+        in
+        <span class="red">
+          {{ Object.keys(cathegories).length }} Kategorien
+        </span>
         gefunden
       </div>
     </div>
@@ -46,10 +47,15 @@
       </transition>
       <footer>
         <div class="left">
-          <a class="logo" href="https://amuvee.de/">amuvee<span>.</span></a>
+          <a class="logo" href="https://amuvee.de/">
+            amuvee
+            <span>.</span>
+          </a>
           <nav>
-            <a href="https://amuvee.de/impressum">Impressum</a> |
-            <a href="https://amuvee.de/datenschutz">Datenschutz</a> |
+            <a href="https://amuvee.de/impressum">Impressum</a>
+            |
+            <a href="https://amuvee.de/datenschutz">Datenschutz</a>
+            |
             <a @click="removeFavorites">Cookies löschen</a>
           </nav>
         </div>
@@ -59,19 +65,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Card from "@/components/Card.vue";
-import SharingCard from "@/components/SharingCard.vue";
-import CathegoryNav from "@/components/CathegoryNav.vue";
-import ResultCard from "@/components/ResultCard.vue";
-import ResultHeader from "@/components/ResultHeader.vue";
-import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
-import axios from "axios";
-import { FinderStatus } from "@/shared/status";
-import { Cathegory } from "@/shared/cathegory";
-import CookieCard from "@/components/CookieCard.vue";
-import Alert from "@/components/Alert.vue";
-import Loadbar from "@/components/Loadbar.vue";
+import { Component, Vue } from 'vue-property-decorator'
+import Card from '@/components/Card.vue'
+import SharingCard from '@/components/SharingCard.vue'
+import CathegoryNav from '@/components/CathegoryNav.vue'
+import ResultCard from '@/components/ResultCard.vue'
+import ResultHeader from '@/components/ResultHeader.vue'
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue'
+import axios from 'axios'
+import { FinderStatus } from '@/shared/status'
+import { Cathegory } from '@/shared/cathegory'
+import CookieCard from '@/components/CookieCard.vue'
+import Alert from '@/components/Alert.vue'
+import Loadbar from '@/components/Loadbar.vue'
 
 @Component({
   components: {
@@ -87,193 +93,197 @@ import Loadbar from "@/components/Loadbar.vue";
   },
 })
 export default class Results extends Vue {
-  url = "https://afq-t32f44ncfa-ey.a.run.app/items/";
-  activeCathegory = 1; // TODO: load from most weighted
-  activeResult: any = null;
-  results: any[] = [];
-  cathegories: { [key: number]: Cathegory } = {};
-  sharingOpen = false;
-  cookieOpen = false;
-  favorites: number[] = [];
-  cookiesEnabled = false;
-  duringLoad = true;
+  url = 'https://afq-t32f44ncfa-ey.a.run.app/items/'
+  activeCathegory = 1 // TODO: load from most weighted
+  activeResult: any = null
+  results: any[] = []
+  cathegories: { [key: number]: Cathegory } = {}
+  sharingOpen = false
+  cookieOpen = false
+  favorites: number[] = []
+  cookiesEnabled = false
+  duringLoad = true
   get current(): Cathegory {
-    return this.cathegories[this.activeCathegory];
+    return this.cathegories[this.activeCathegory]
   }
   get numberOfAllResults(): number {
-    const cathegories: { [key: number]: Cathegory } = this.cathegories;
-    let n = 0;
+    const cathegories: { [key: number]: Cathegory } = this.cathegories
+    let n = 0
     for (const key in cathegories) {
       if (Object.prototype.hasOwnProperty.call(cathegories, key)) {
         if (!cathegories[key].allreadyRequested) {
-          n += cathegories[key].nor;
+          n += cathegories[key].nor
         } else {
-          n += cathegories[key].content.length;
+          n += cathegories[key].content.length
         }
       }
     }
-    return n;
+    return n
   }
-  public $store: any;
+  public $store: any
   constructor() {
-    super();
+    super()
     // TODO: delete
     if (this.$route.query.answers) {
       this.$store.commit(
-        "initAnswers",
-        FinderStatus.fromJson(JSON.parse(this.$route.query.answers + ""))
-      );
+        'initAnswers',
+        FinderStatus.fromJson(JSON.parse(this.$route.query.answers + '')),
+      )
     }
-    const favs: any = this.$cookies.get("favorites");
+    const favs: any = this.$cookies.get('favorites')
     if (favs && favs.allowed) {
       // TODO: expires
-      this.favorites = favs.value;
-      this.cookiesEnabled = true;
+      this.favorites = favs.value
+      this.cookiesEnabled = true
     }
   }
+
   removeFavorites(): void {
-    this.cookiesEnabled = false;
-    this.$cookies.remove("favorites");
-    return;
+    this.cookiesEnabled = false
+    this.$cookies.remove('favorites')
+    return
   }
   updateFavorites(card: { id: number; activ: boolean }): void {
-    const expires = new Date();
-    expires.setDate(new Date().getDate() + 356);
+    const expires = new Date()
+    expires.setDate(new Date().getDate() + 356)
     if (card.activ) {
       if (this.favorites.indexOf(card.id) == -1) {
-        this.favorites.push(card.id);
+        this.favorites.push(card.id)
       }
     } else {
-      const index = this.favorites.indexOf(card.id);
+      const index = this.favorites.indexOf(card.id)
       if (index > -1) {
-        this.favorites.splice(index, 1);
+        this.favorites.splice(index, 1)
       }
     }
     if (this.cookiesEnabled) {
-      this.$cookies.set("favorites", {
+      this.$cookies.set('favorites', {
         allowed: true,
         expires,
         value: this.favorites,
-      });
+      })
     } else {
-      this.cookieOpen = true;
+      this.cookieOpen = true
     }
   }
   enableFavorites(allow: boolean): void {
-    this.cookieOpen = false;
-    this.cookiesEnabled = allow;
-    const expires = new Date();
-    expires.setDate(new Date().getDate() + 356);
+    this.cookieOpen = false
+    this.cookiesEnabled = allow
+    const expires = new Date()
+    expires.setDate(new Date().getDate() + 356)
     if (allow) {
-      this.$cookies.set("favorites", {
+      this.$cookies.set('favorites', {
         allowed: true,
         expires,
         value: this.favorites,
-      });
+      })
     } else {
-      this.$cookies.set("favorites", {
+      this.$cookies.set('favorites', {
         allowed: false,
         expires,
-      });
+      })
     }
   }
   getResultFilters(cathegory: number | null): string {
-    let f = '{"_and": [';
+    let f = '{"_and": ['
     // filter+='{"min_age": {"_eq": 0}}';
     // filter+='{"_or": [{"min_age": {"_eq": 0}}, {"min_age": {"_eq": "_nnull"}}]}'
     // filter+=',{"is_pregnant": {"_eq": true}}';
 
     // end_date: null
     // start_date: null
-    const status: FinderStatus = this.$store.getters.answers;
+    const status: FinderStatus = this.$store.getters.answers
     const filters: string[] = [
       `{"_or": [{"end_date": {"_null":true}}, {"end_date":{"_gt": "$NOW"}}]}`,
-    ];
-    filters.push(...status.children.getQueryFilters());
-    filters.push(...status.housingSituation.getQueryFilters());
-    filters.push(...status.lifeSituation.getQueryFilters());
-    filters.push(...status.income.getQueryFilters());
+    ]
+    filters.push(...status.children.getQueryFilters())
+    filters.push(...status.housingSituation.getQueryFilters())
+    filters.push(...status.lifeSituation.getQueryFilters())
+    filters.push(...status.income.getQueryFilters())
     if (cathegory != null) {
-      filters.push(`{"category": {"_eq": ${cathegory}}}`);
+      filters.push(`{"category": {"_eq": ${cathegory}}}`)
     }
     filters.push('{"status": {"_eq": "published"}}')
-    f += filters.join(",");
-    f += "]}";
-    return f;
+    f += filters.join(',')
+    f += ']}'
+    return f
   }
 
   get cathegoriesLoaded(): boolean {
-    return Object.keys(this.cathegories).length > 0;
+    return Object.keys(this.cathegories).length > 0
   }
 
   async loadCathegoryResults(): Promise<void> {
-    const status: FinderStatus = this.$store.getters.answers;
+    const status: FinderStatus = this.$store.getters.answers
     // TODO: repeat favorite sorting
     if (this.current && !this.current.allreadyRequested) {
       const request =
         this.url +
-        "result?fields=*,type.*,has_insurance.*,has_relationship.*,has_job_related_situation.*,relationship_types.*&limit=" +
+        'result?fields=*,type.*,has_insurance.*,has_relationship.*,has_job_related_situation.*,relationship_types.*&limit=' +
         this.numberOfAllResults +
-        "&filter=" +
-        this.getResultFilters(this.current.id);
-      let results = (await axios.get(request)).data.data;
+        '&filter=' +
+        this.getResultFilters(this.current.id)
+      let results = (await axios.get(request)).data.data
       results = results.map((result: any) => {
-        result.actions = [];
-        result.isFavorite = this.favorites.includes(result.id);
-        result.weight = result.type.weight + result.isFavorite * 1000;
-        return result;
-      });
+        result.actions = []
+        result.isFavorite = this.favorites.includes(result.id)
+        result.weight = result.type.weight + result.isFavorite * 1000
+        return result
+      })
       results = results
-        .filter(
-          (result: any) => {
-            return status.lifeSituation.getResultFilter(result) &&
+        .filter((result: any) => {
+          return (
+            status.lifeSituation.getResultFilter(result) &&
             status.children.getResultFilter(result) &&
             status.housingSituation.getResultFilter(result) &&
             status.insurance.getResultFilter(result) &&
             status.working.getResultFilter(result) &&
             status.income.getResultFilter(result)
-          }
-        )
+          )
+        })
         .sort((a: any, b: any) => {
-          return b.weight - a.weight;
-        });
+          return b.weight - a.weight
+        })
 
-      this.$store.commit("setCategoryResults", {
+      this.$store.commit('setCategoryResults', {
         id: this.current.id,
         results,
-      });
-      this.results = results;
-      this.current.allreadyRequested = true;
-      this.duringLoad = false;
+      })
+      this.results = results
+      this.current.allreadyRequested = true
+      this.duringLoad = false
     }
   }
-  async mounted(): Promise<void> {
-    this.$store.commit(
-      "initResultTypes",
-      (await axios.get(this.url + "result_type")).data.data
-    );
-    const cathegories = (await axios.get(this.url + "category")).data.data;
-    this.$store.commit("initCathegories", cathegories);
-
-    for (let i = 0; i < cathegories.length; i++) {
-      const cat = cathegories[i];
-      const nor = (
-        await axios.get(
-          this.url +
-            "result?fields=*&limit=0&meta=filter_count&filter=" +
-            this.getResultFilters(cat.id)
-        )
-      ).data.meta.filter_count;
-      this.$store.commit("setNumberOfResults", { id: cat.id, nor });
-    }
-
-    this.cathegories = this.$store.getters.cathegories;
-    this.activeCathegory = 1;
-    this.loadCathegoryResults();
+  mounted() {
+    axios.get(this.url + 'result_type').then((initResultTypes) => {
+      this.$store.commit('initResultTypes', initResultTypes.data.data)
+      axios.get(this.url + 'category').then((caths) => {
+        let cathegories = caths.data.data
+        this.$store.commit('initCathegories', cathegories)
+        for (let i = 0; i < cathegories.length; i++) {
+          const cat = cathegories[i]
+          axios
+            .get(
+              this.url +
+                'result?fields=*&limit=0&meta=filter_count&filter=' +
+                this.getResultFilters(cat.id),
+            )
+            .then((results) => {
+              this.$store.commit('setNumberOfResults', {
+                id: cat.id,
+                nor: results.data.meta.filter_count,
+              })
+              this.cathegories = this.$store.getters.cathegories
+              this.activeCathegory = 1
+              this.loadCathegoryResults().then();
+            })
+        }
+      })
+    })
   }
   changeCathegory(index: number): void {
-    this.activeCathegory = index;
-    this.loadCathegoryResults();
+    this.activeCathegory = index
+    this.loadCathegoryResults()
   }
 }
 </script>
@@ -281,7 +291,7 @@ export default class Results extends Vue {
 #results {
   .title {
     h1 {
-      font-family: "Playfair Display";
+      font-family: 'Playfair Display';
       color: var(--dark-primary);
       font-size: 2rem;
       line-height: 72px;
@@ -376,7 +386,7 @@ export default class Results extends Vue {
     }
   }
   .logo {
-    font-family: "Playfair Display";
+    font-family: 'Playfair Display';
     text-decoration: none;
     color: var(--dark-primary);
     font-size: 40px;
