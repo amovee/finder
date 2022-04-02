@@ -2,11 +2,11 @@
   <div class="privacy">
     <h2>Datenschutz</h2>
     <p>
-      Zur Zeit speichern wir
+      Zurzeit speichern wir
       <b>keine deiner Daten</b>
       .
       <br />
-      Wir benötigen sie nur, um während deines Besuchs die
+      Wir benötigen sie nur um während deines Besuchs die
       <br />
       für dich
       <b>passenden Resultate</b>
