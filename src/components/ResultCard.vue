@@ -2,7 +2,7 @@
   <div class="result-card">
     <div class="content">
       <header>
-        <h2>{{ content.name }}</h2>
+        <h2  v-html="content.name"></h2>
         <nav>
           <button class="btn" @click="close">
             <img src="@/assets/close.svg" />

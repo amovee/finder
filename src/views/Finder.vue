@@ -15,6 +15,11 @@
             :value="value.privacy"
             @change="onChange"
           />
+          <Parent
+            v-if="pages[index].key == 'parent'"
+            :value="value.parent"
+            @change="onChange"
+          />
           <Children
             v-if="pages[index].key == 'children'"
             :value="value.children"
@@ -79,6 +84,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Privacy from "./finder/Privacy.vue";
+import Parent from "./finder/Parent.vue";
 import Children from "./finder/Children.vue";
 import HousingSituation from "./finder/Habitat.vue";
 import Insurance from "./finder/Insurance.vue";
@@ -94,6 +100,7 @@ import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 @Component({
   components: {
     Privacy,
+    Parent,
     Children,
     HousingSituation,
     Insurance,
@@ -127,12 +134,8 @@ export default class Finder extends Vue {
           anzeigen. Hast du nur ungefähre Werte zur Hand, trage diese ein. Das
           gibt dir zumindest eine erste Orientierung.`;
       this.pages = [
-        new Page(
-          "privacy",
-          "Datenschutz",
-          this.value.privacy,
-          `info`
-        ),
+        new Page("privacy", "Datenschutz", this.value.privacy, `info`),
+        new Page("parent", "Elternteil", this.value.parent, `info`),
         new Page(
           "children",
           "Kinder",
@@ -181,7 +184,7 @@ export default class Finder extends Vue {
           a.scrollTop = 0;
         }
       } else {
-        if (this.value?.isValid) {          
+        if (this.value?.isValid) {
           this.$store.commit("initAnswers", this.value);
           this.$router.push("results");
         }

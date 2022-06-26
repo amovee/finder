@@ -2,7 +2,7 @@
   <div class="children">
     <h2>Kinder</h2>
     <form>
-      <div class="group">
+      <div class="group" v-if="isFemale">
         <h3>Hast du bereits Kinder?</h3>
         <div class="group horizontal">
           <div class="radio">
@@ -30,7 +30,7 @@
         </div>
       </div>
       <transition name="fade">
-        <div class="group" v-if="value.alreadyChildren == true">
+        <div class="group" v-if="value.alreadyChildren == true || !isFemale">
           <h3>Wie viele Kinder hast du?</h3>
           <div class="group horizontal">
             <div class="radio">
@@ -106,7 +106,7 @@
       <transition name="fade">
       <div
         class="group"
-        v-if="value.alreadyChildren == true && value.numberOfChildren > 0"
+        v-if="(value.alreadyChildren == true || !isFemale) && value.numberOfChildren > 0"
       >
         <h3>
           {{
@@ -118,7 +118,7 @@
         <ul class="loop-list">
           <li v-for="i in Math.min(value.numberOfChildren, 5)" :key="i">
             <label :for="'date_0_' + (i - 1)" v-if="value.numberOfChildren > 1"
-              >Kind {{ i }}</label
+              >{{ i }}. Kind</label
             >
             <input
               type="date"
@@ -134,7 +134,7 @@
       </transition>
       
       <transition name="fade">
-      <div class="group" v-if="value.alreadyChildren != null">
+      <div class="group" v-if="value.alreadyChildren != null && isFemale">
         <h3>Bist du schwanger?</h3>
         <div class="group horizontal">
           <div class="radio">
@@ -178,6 +178,12 @@ import { ChildrenStatus } from "@/shared/status";
 })
 export default class Children extends Vue {
   @Prop() value?: ChildrenStatus;
+
+  
+  public get isFemale() : boolean {
+    return this.value?.status.parent.gender != "male";
+  }
+  
 
   @Emit("change")
   onChange(): { key: string; value: any } {
